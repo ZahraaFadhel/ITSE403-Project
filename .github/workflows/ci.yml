@@ -22,43 +22,31 @@ jobs:
         java-version: 17
         distribution: 'temurin'
 
-    - name: Verify Java
-      run: |
-        java -version
-        javac -version
-
     - name: Download JUnit 5
       run: |
         mkdir -p lib
-        curl -L https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.9.3/junit-platform-console-standalone-1.9.3.jar -o lib/junit-platform-console-standalone.jar
+        curl -L https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.9.3/junit-platform-console-standalone-1.9.3.jar -o lib/junit-platform.jar
 
     - name: Compile main code
       run: |
         find src -name "*.java" > sources.txt || echo "No main sources found"
-        if [ -s sources.txt ]; then
-          javac -d bin -encoding UTF-8 @sources.txt
-        fi
+        [ -s sources.txt ] && javac -d bin -encoding UTF-8 @sources.txt
 
     - name: Compile tests
-      shell: bash
       run: |
-        find tests -name "*.java" > test-sources.txt || true
-        find . -path "*-randoop/*.java" >> test-sources.txt || true
-        
+        find tests -name "*.java" > test-sources.txt || echo "No tests found"
         if [ -s test-sources.txt ]; then
-          javac -d bin-tests -encoding UTF-8 -cp "bin:lib/junit-platform-console-standalone.jar" @test-sources.txt
+          javac -d bin-tests -encoding UTF-8 -cp "bin:lib/junit-platform.jar" @test-sources.txt
         else
-          echo "::warning::No test sources found"
+          echo "::error::No test files found in tests/"
+          exit 1
         fi
 
-    - name: Run tests (JUnit 5)
-      shell: bash
+    - name: Run tests
       run: |
-        CLASS_PATH="bin:bin-tests:lib/junit-platform-console-standalone.jar"
-        
-        # Discover and run tests
-        java -jar lib/junit-platform-console-standalone.jar \
+        CLASS_PATH="bin:bin-tests:lib/junit-platform.jar"
+        java -jar lib/junit-platform.jar \
           --class-path "$CLASS_PATH" \
           --scan-class-path \
-          --fail-if-no-tests \
+          --include-classname='.*' \
           --details tree
