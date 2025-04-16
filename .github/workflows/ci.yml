@@ -8,96 +8,57 @@ jobs:
   test:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        java: [17] 
+        java: [17]
 
     steps:
-    # --- Get the latest code ---
     - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
 
-    # --- Setup Java ---
-    - name: Set up JDK ${{ matrix.java }}
+    - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
-        java-version: ${{ matrix.java }}
+        java-version: 17
         distribution: 'temurin'
 
-    # --- Prepare folders ---
-    - name: Prepare directories
+    - name: Verify Java
       run: |
-        mkdir -p bin
-        mkdir -p bin-tests
-        echo "Project structure:"
-        ls -R src tests *-randoop || echo "Some directories may not exist yet"
+        java -version
+        javac -version
 
-    # --- Compile main code ---
+    - name: Download JUnit 5
+      run: |
+        mkdir -p lib
+        curl -L https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.9.3/junit-platform-console-standalone-1.9.3.jar -o lib/junit-platform-console-standalone.jar
+
     - name: Compile main code
       run: |
-        find src -name "*.java" > sources.txt || echo "No Java files found in src/"
+        find src -name "*.java" > sources.txt || echo "No main sources found"
         if [ -s sources.txt ]; then
           javac -d bin -encoding UTF-8 @sources.txt
-        else
-          echo "::warning::No main Java files to compile"
         fi
 
-    # --- Compile tests ---
-    - name: Compile tests (OS-aware)
+    - name: Compile tests
       shell: bash
       run: |
-        if [ "$RUNNER_OS" == "Windows" ]; then
-          CP_SEP=";"
-          FIND_CMD="dir /s /b *.java"
+        find tests -name "*.java" > test-sources.txt || true
+        find . -path "*-randoop/*.java" >> test-sources.txt || true
+        
+        if [ -s test-sources.txt ]; then
+          javac -d bin-tests -encoding UTF-8 -cp "bin:lib/junit-platform-console-standalone.jar" @test-sources.txt
         else
-          CP_SEP=":"
-          FIND_CMD="find . -name '*.java'"
+          echo "::warning::No test sources found"
         fi
 
-        # Compile manual tests
-        echo "Looking for manual tests..."
-        $FIND_CMD | grep -e "^tests/" > manual_tests.txt || true
-        if [ -s manual_tests.txt ]; then
-          javac -d bin-tests -encoding UTF-8 -cp "bin${CP_SEP}lib/junit.jar" @manual_tests.txt
-        else
-          echo "::notice::No manual tests found in tests/"
-        fi
-
-        # Compile Randoop tests
-        echo "Looking for Randoop tests..."
-        $FIND_CMD | grep -e "-randoop/" > randoop_tests.txt || true
-        if [ -s randoop_tests.txt ]; then
-          javac -d bin-tests -encoding UTF-8 -cp "bin${CP_SEP}lib/junit.jar" @randoop_tests.txt
-        else
-          echo "::notice::No Randoop tests found in *-randoop/"
-        fi
-
-    # --- Run tests ---
-    - name: Run tests
+    - name: Run tests (JUnit 5)
       shell: bash
       run: |
-        if [ "$RUNNER_OS" == "Windows" ]; then
-          CP_SEP=";"
-          FIND_CMD="dir /s /b *.class"
-        else
-          CP_SEP=":"
-          FIND_CMD="find bin-tests -name '*.class'"
-        fi
-
-        echo "Discovering test classes..."
-        TEST_CLASSES=$($FIND_CMD | grep -v '\$' | sed 's/\.class$//' | tr '/' '.' | sed 's/bin-tests.//')
+        CLASS_PATH="bin:bin-tests:lib/junit-platform-console-standalone.jar"
         
-        if [ -z "$TEST_CLASSES" ]; then
-          echo "::error::No test classes found in bin-tests/"
-          echo "Check that:"
-          echo "1. Test files end with 'Test.java'"
-          echo "2. Files are in tests/ or *-randoop/ folders"
-          exit 1
-        fi
-
-        echo "=== Running these test classes ==="
-        echo "$TEST_CLASSES" | tr ' ' '\n'
-        echo "================================"
-        
-        java -cp "bin${CP_SEP}bin-tests${CP_SEP}lib/junit.jar" org.junit.runner.JUnitCore $TEST_CLASSES || echo "::warning::Some tests failed"
+        # Discover and run tests
+        java -jar lib/junit-platform-console-standalone.jar \
+          --class-path "$CLASS_PATH" \
+          --scan-class-path \
+          --fail-if-no-tests \
+          --details tree
