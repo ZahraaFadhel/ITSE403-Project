@@ -4,14 +4,13 @@ package tests.manageMoviesTesting;
  * This class contains unit tests for the manageMoviesPresentationLayer class.
  * It ensures that the presentation layer correctly handles user choices
  * and interacts with the business layer without throwing exceptions.
-*/
+ */
 
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.Assert.fail;
+import org.junit.Before;
+import org.junit.Test;
 import java.util.Scanner;
 import src.primaryUseCases.manageMovies.*;
-
 
 public class testManagePL {
     private manageMoviesPresentationLayer presentationLayer;
@@ -19,9 +18,8 @@ public class testManagePL {
 
     // Sets up the test environment before each test case
     // Initializes a mock business layer and creates an instance of the presentation layer
-    @BeforeEach
-    void setUp() {
-        // Initialize an anonymous class to override business layer methods for testing
+    @Before
+    public void setUp() {
         businessLayer = new manageMoviesBusinessLayer() {
             @Override
             public void addMovie() {
@@ -39,38 +37,52 @@ public class testManagePL {
             }
         };
 
-        // Initialize the presentation layer with the mock business layer and a scanner
         Scanner scanner = new Scanner(System.in);
         presentationLayer = new manageMoviesPresentationLayer(businessLayer, scanner);
     }
 
-    // Tests if handleChoice(1) calls addMovie without throwing an exception
     @Test
-    void testHandleChoice_AddMovie() {
-        assertDoesNotThrow(() -> presentationLayer.handleChoice(1));
+    public void testHandleChoice_AddMovie() {
+        try {
+            presentationLayer.handleChoice(1);
+        } catch (Exception e) {
+            fail("Exception thrown in testHandleChoice_AddMovie: " + e.getMessage());
+        }
     }
 
-    // Tests if handleChoice(2) calls updateMovie without throwing an exception
     @Test
-    void testHandleChoice_UpdateMovie() {
-        assertDoesNotThrow(() -> presentationLayer.handleChoice(2));
+    public void testHandleChoice_UpdateMovie() {
+        try {
+            presentationLayer.handleChoice(2);
+        } catch (Exception e) {
+            fail("Exception thrown in testHandleChoice_UpdateMovie: " + e.getMessage());
+        }
     }
 
-    // Tests if handleChoice(3) calls deleteMovie without throwing an exception
     @Test
-    void testHandleChoice_DeleteMovie() {
-        assertDoesNotThrow(() -> presentationLayer.handleChoice(3));
+    public void testHandleChoice_DeleteMovie() {
+        try {
+            presentationLayer.handleChoice(3);
+        } catch (Exception e) {
+            fail("Exception thrown in testHandleChoice_DeleteMovie: " + e.getMessage());
+        }
     }
 
-    // Tests if handleChoice with an invalid choice (e.g., 5) does not throw an exception
     @Test
-    void testHandleChoice_InvalidChoice() {
-        assertDoesNotThrow(() -> presentationLayer.handleChoice(5));
+    public void testHandleChoice_InvalidChoice() {
+        try {
+            presentationLayer.handleChoice(5);
+        } catch (Exception e) {
+            fail("Exception thrown in testHandleChoice_InvalidChoice: " + e.getMessage());
+        }
     }
 
-    // Tests if handleChoice(4) (returning to the main menu) does not throw an exception
     @Test
-    void testHandleChoice_ReturnToMainMenu() {
-        assertDoesNotThrow(() -> presentationLayer.handleChoice(4));
+    public void testHandleChoice_ReturnToMainMenu() {
+        try {
+            presentationLayer.handleChoice(4);
+        } catch (Exception e) {
+            fail("Exception thrown in testHandleChoice_ReturnToMainMenu: " + e.getMessage());
+        }
     }
 }

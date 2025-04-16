@@ -1,218 +1,148 @@
-/**
- * Test Class for Checkout Data Layer
- * Tests valid and invalid scenarios for discount codes, card details, and bookings.
- */
 package tests.checkoutTesting;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.List;
 
 import src.primaryUseCases.checkout.checkoutDataLayer;
 import src.dataStore.*;
 
+import static org.junit.Assert.*;
+
 public class testCheckoutDL {
 
     private checkoutDataLayer checkoutDL;
 
-    @BeforeEach
+    @Before
     public void setUp() {
         checkoutDL = new checkoutDataLayer();
         new src.dataStore();
     }
 
-    @Nested
-    class SuccessCases {
-        /**
-         * Test: Bookings Initialization
-         * Verifies that bookings are initialized correctly.
-         */
-        @Test
-        public void testBookings() {
-            List<Booking> bookings = checkoutDL.bookings();
-            assertNotNull(bookings, "Bookings list should not be null");
-            assertEquals(4, bookings.size(), "DataStore contains 4 sample bookings ensure they were initialized correctly");
-        }
+    // ----------- Success Cases -----------
 
-        /**
-         * Test: Valid Discount Codes
-         * Verifies that valid discount codes are initialized correctly.
-         */
-        @Test
-        public void testValidDiscountCodes() {
-            List<ValidDiscountCode> discountCodes = checkoutDL.validDiscountCodes();
-            assertNotNull(discountCodes, "Discount codes list should not be null");
-            assertEquals(3, discountCodes.size(), "DataStore contains 3 sample discount codes ensure they were initialized correctly");
-        }
-
-        /**
-         * Test: Valid Discount Code Check
-         * Verifies that valid discount codes are recognized (case-insensitive and with spaces).
-         */
-        @Test
-        public void testIsValidDiscountCode() {
-            assertTrue(checkoutDL.isValidDiscountCode("NEWYEAR25"));
-            assertTrue(checkoutDL.isValidDiscountCode("eidmubarak15"), "Valid discount code (case insensitive)");
-            assertTrue(checkoutDL.isValidDiscountCode("NEWYEAR25 "), "Trailing space should be a valid discount code");
-            assertTrue(checkoutDL.isValidDiscountCode(" NEWYEAR25"), "Leading space should be a valid discount code");
-        }
-
-        /**
-         * Test: Discount Percentage by Code
-         * Verifies that the correct discount percentage is returned for valid codes.
-         */
-        @Test
-        public void testGetDiscountPercentageByCode() {
-            assertEquals(25, checkoutDL.getDiscountPercentageByCode("NEWYEAR25"));
-            assertEquals(15, checkoutDL.getDiscountPercentageByCode("EIDMUBARAK15"));
-            assertEquals(25, checkoutDL.getDiscountPercentageByCode("NEWYEAR25 "), "Trailing space should return 25% discount");
-            assertEquals(25, checkoutDL.getDiscountPercentageByCode(" NEWYEAR25"), "Leading space should return 25% discount");
-        }
-
-        /**
-         * Test: Valid Card Type
-         * Verifies that valid card types are recognized (case-insensitive).
-         */
-        @Test
-        public void testIsValidCardType() {
-            assertTrue(checkoutDataLayer.isValidCardType("Visa"));
-            assertTrue(checkoutDataLayer.isValidCardType("MasterCard"));
-            assertTrue(checkoutDataLayer.isValidCardType("VISA"), "Valid card type (case insensitive)");
-            assertTrue(checkoutDataLayer.isValidCardType("MASTERCARD"), "Valid card type (case insensitive)");
-        }
-
-        /**
-         * Test: Valid Cardholder Name
-         * Verifies that valid cardholder names are recognized.
-         */
-        @Test
-        public void testIsValidCardholderName() {
-            assertTrue(checkoutDataLayer.isValidCardholderName("John Doe"));
-            assertTrue(checkoutDataLayer.isValidCardholderName("Alice"));
-        }
-
-        /**
-         * Test: Valid Card Number
-         * Verifies that valid card numbers are recognized.
-         */
-        @Test
-        public void testIsValidCardNumber() {
-            assertTrue(checkoutDataLayer.isValidCardNumber("1234567890123456"));
-        }
-
-        /**
-         * Test: Valid Expiry Date
-         * Verifies that valid expiry dates are recognized.
-         */
-        @Test
-        public void testIsValidExpiryDate() {
-            assertTrue(checkoutDataLayer.isValidExpiryDate("12/25"));
-            assertTrue(checkoutDataLayer.isValidExpiryDate("01/30"));
-        }
-
-        /**
-         * Test: Valid CVV
-         * Verifies that valid CVVs are recognized (with leading/trailing spaces).
-         */
-        @Test
-        public void testIsValidCVV() {
-            assertTrue(checkoutDataLayer.isValidCVV("123"));
-            assertTrue(checkoutDataLayer.isValidCVV("123 "), "123 with trailing space should be a valid CVV");
-            assertTrue(checkoutDataLayer.isValidCVV(" 123"), "123 with leading space should be a valid CVV");
-        }
+    @Test
+    public void testBookingsInitialization() {
+        List<Booking> bookings = checkoutDL.bookings();
+        assertNotNull("Bookings list should not be null", bookings);
+        assertEquals("DataStore contains 4 sample bookings", 4, bookings.size());
     }
 
-    @Nested
-    class FailureCases {
-        /**
-         * Test: Invalid Discount Code
-         * Verifies that invalid discount codes are not recognized.
-         */
-        @Test
-        public void testIsValidDiscountCode() {
-            assertFalse(checkoutDL.isValidDiscountCode("INVALIDCODE"), "Invalid discount code does not exist");
-        }
+    @Test
+    public void testValidDiscountCodesInitialization() {
+        List<ValidDiscountCode> discountCodes = checkoutDL.validDiscountCodes();
+        assertNotNull("Discount codes list should not be null", discountCodes);
+        assertEquals("DataStore contains 3 sample discount codes", 3, discountCodes.size());
+    }
 
-        /**
-         * Test: Invalid Discount Percentage
-         * Verifies that invalid discount codes return 0% discount.
-         */
-        @Test
-        public void testGetDiscountPercentageByCode() {
-            assertEquals(0, checkoutDL.getDiscountPercentageByCode("INVALIDCODE"), "INVALIDCODE should return 0% discount");
-            assertEquals(0, checkoutDL.getDiscountPercentageByCode(""), "Empty string should return 0% discount");
-        }
+    @Test
+    public void testIsValidDiscountCodeSuccess() {
+        assertTrue(checkoutDL.isValidDiscountCode("NEWYEAR25"));
+        assertTrue("Valid discount code (case insensitive)", checkoutDL.isValidDiscountCode("eidmubarak15"));
+        assertTrue("Trailing space", checkoutDL.isValidDiscountCode("NEWYEAR25 "));
+        assertTrue("Leading space", checkoutDL.isValidDiscountCode(" NEWYEAR25"));
+    }
 
-        /**
-         * Test: Invalid Card Type
-         * Verifies that invalid card types are not recognized.
-         */
-        @Test
-        public void testIsValidCardType() {
-            assertFalse(checkoutDataLayer.isValidCardType("Amex"), "Not visa or mastercard so should not be a valid card type");
-            assertFalse(checkoutDataLayer.isValidCardType(""), "Empty string should not be a valid card type");
-            assertFalse(checkoutDataLayer.isValidCardType(null), "Null input should not be a valid card type");
-        }
+    @Test
+    public void testGetDiscountPercentageByCodeSuccess() {
+        assertEquals(25, checkoutDL.getDiscountPercentageByCode("NEWYEAR25"));
+        assertEquals(15, checkoutDL.getDiscountPercentageByCode("EIDMUBARAK15"));
+        assertEquals("Trailing space", 25, checkoutDL.getDiscountPercentageByCode("NEWYEAR25 "));
+        assertEquals("Leading space", 25, checkoutDL.getDiscountPercentageByCode(" NEWYEAR25"));
+    }
 
-        /**
-         * Test: Invalid Cardholder Name
-         * Verifies that invalid cardholder names are not recognized.
-         */
-        @Test
-        public void testIsValidCardholderName() {
-            assertFalse(checkoutDataLayer.isValidCardholderName("John123"), "Contains numbers should not be a valid cardholder name");
-            assertFalse(checkoutDataLayer.isValidCardholderName("John@Doe"), "Contains special characters should not be a valid cardholder name");
-            assertFalse(checkoutDataLayer.isValidCardholderName(""), "Empty string should not be a valid cardholder name");
-            assertFalse(checkoutDataLayer.isValidCardholderName(null), "Null input should not be a valid cardholder name");
-            assertFalse(checkoutDataLayer.isValidCardholderName("John Doe123"), "Contains numbers should not be a valid cardholder name");
-            assertFalse(checkoutDataLayer.isValidCardholderName("John-Doe"), "Contains special characters should not be a valid cardholder name");
-        }
+    @Test
+    public void testIsValidCardTypeSuccess() {
+        assertTrue(checkoutDataLayer.isValidCardType("Visa"));
+        assertTrue(checkoutDataLayer.isValidCardType("MasterCard"));
+        assertTrue("Case insensitive VISA", checkoutDataLayer.isValidCardType("VISA"));
+        assertTrue("Case insensitive MASTERCARD", checkoutDataLayer.isValidCardType("MASTERCARD"));
+    }
 
-        /**
-         * Test: Invalid Card Number
-         * Verifies that invalid card numbers are not recognized.
-         */
-        @Test
-        public void testIsValidCardNumber() {
-            assertFalse(checkoutDataLayer.isValidCardNumber("1234"), "Should not be a valid card number (too short)");
-            assertFalse(checkoutDataLayer.isValidCardNumber("12345678901234567"), "Should not be a valid card number (too long)");
-            assertFalse(checkoutDataLayer.isValidCardNumber("123456789012345a"), "Should not be a valid card number (contains letters)");
-            assertFalse(checkoutDataLayer.isValidCardNumber(""), "Empty string should not be a valid card number");
-            assertFalse(checkoutDataLayer.isValidCardNumber(null), "Null input should not be a valid card number");
-            assertFalse(checkoutDataLayer.isValidCardNumber("1234 5678 9012 3456"), "Card number with spaces should not be valid");
-            assertFalse(checkoutDataLayer.isValidCardNumber("1234-5678-9012-3456"), "Card number with hyphens should not be valid");
-        }
+    @Test
+    public void testIsValidCardholderNameSuccess() {
+        assertTrue(checkoutDataLayer.isValidCardholderName("John Doe"));
+        assertTrue(checkoutDataLayer.isValidCardholderName("Alice"));
+    }
 
-        /**
-         * Test: Invalid Expiry Date
-         * Verifies that invalid expiry dates are not recognized.
-         */
-        @Test
-        public void testIsValidExpiryDate() {
-            assertFalse(checkoutDataLayer.isValidExpiryDate("13/25"), "Should not be a valid expiry date (invalid month)");
-            assertFalse(checkoutDataLayer.isValidExpiryDate("00/25"), "Should not be a valid expiry date (invalid month)");
-            assertFalse(checkoutDataLayer.isValidExpiryDate("12/2025"), "Should not be a valid expiry date (invalid format)");
-            assertFalse(checkoutDataLayer.isValidExpiryDate("12/25/2025"), "Should not be a valid expiry date (invalid format)");
-            assertFalse(checkoutDataLayer.isValidExpiryDate(""), "Empty string should not be a valid expiry date");
-            assertFalse(checkoutDataLayer.isValidExpiryDate(null), "Null input should not be a valid expiry date");
-            assertFalse(checkoutDataLayer.isValidExpiryDate("12-25"), "Should not be a valid expiry date (incorrect separator)");
-            assertFalse(checkoutDataLayer.isValidExpiryDate("12/5"), "Should not be a valid expiry date (invalid year format)");
-        }
+    @Test
+    public void testIsValidCardNumberSuccess() {
+        assertTrue(checkoutDataLayer.isValidCardNumber("1234567890123456"));
+    }
 
-        /**
-         * Test: Invalid CVV
-         * Verifies that invalid CVVs are not recognized.
-         */
-        @Test
-        public void testIsValidCVV() {
-            assertFalse(checkoutDataLayer.isValidCVV("12"), "Should not be a valid CVV (too short)");
-            assertFalse(checkoutDataLayer.isValidCVV("1234"), "Should not be a valid CVV (too long)");
-            assertFalse(checkoutDataLayer.isValidCVV("12a"), "Should not be a valid CVV (contains letters)");
-            assertFalse(checkoutDataLayer.isValidCVV(""), "Empty string should not be a valid CVV");
-            assertFalse(checkoutDataLayer.isValidCVV(null), "Null input should not be a valid CVV");
-        }
+    @Test
+    public void testIsValidExpiryDateSuccess() {
+        assertTrue(checkoutDataLayer.isValidExpiryDate("12/25"));
+        assertTrue(checkoutDataLayer.isValidExpiryDate("01/30"));
+    }
+
+    @Test
+    public void testIsValidCVVSuccess() {
+        assertTrue(checkoutDataLayer.isValidCVV("123"));
+        assertTrue("Trailing space", checkoutDataLayer.isValidCVV("123 "));
+        assertTrue("Leading space", checkoutDataLayer.isValidCVV(" 123"));
+    }
+
+    // ----------- Failure Cases -----------
+
+    @Test
+    public void testIsValidDiscountCodeFailure() {
+        assertFalse("Invalid discount code", checkoutDL.isValidDiscountCode("INVALIDCODE"));
+    }
+
+    @Test
+    public void testGetDiscountPercentageByCodeFailure() {
+        assertEquals("INVALIDCODE should return 0%", 0, checkoutDL.getDiscountPercentageByCode("INVALIDCODE"));
+        assertEquals("Empty string should return 0%", 0, checkoutDL.getDiscountPercentageByCode(""));
+    }
+
+    @Test
+    public void testIsValidCardTypeFailure() {
+        assertFalse("Not Visa/MasterCard", checkoutDataLayer.isValidCardType("Amex"));
+        assertFalse("Empty string", checkoutDataLayer.isValidCardType(""));
+        assertFalse("Null input", checkoutDataLayer.isValidCardType(null));
+    }
+
+    @Test
+    public void testIsValidCardholderNameFailure() {
+        assertFalse("Contains numbers", checkoutDataLayer.isValidCardholderName("John123"));
+        assertFalse("Special characters", checkoutDataLayer.isValidCardholderName("John@Doe"));
+        assertFalse("Empty string", checkoutDataLayer.isValidCardholderName(""));
+        assertFalse("Null input", checkoutDataLayer.isValidCardholderName(null));
+        assertFalse("Numbers in name", checkoutDataLayer.isValidCardholderName("John Doe123"));
+        assertFalse("Special characters", checkoutDataLayer.isValidCardholderName("John-Doe"));
+    }
+
+    @Test
+    public void testIsValidCardNumberFailure() {
+        assertFalse("Too short", checkoutDataLayer.isValidCardNumber("1234"));
+        assertFalse("Too long", checkoutDataLayer.isValidCardNumber("12345678901234567"));
+        assertFalse("Contains letters", checkoutDataLayer.isValidCardNumber("123456789012345a"));
+        assertFalse("Empty string", checkoutDataLayer.isValidCardNumber(""));
+        assertFalse("Null input", checkoutDataLayer.isValidCardNumber(null));
+        assertFalse("Spaces included", checkoutDataLayer.isValidCardNumber("1234 5678 9012 3456"));
+        assertFalse("Hyphens included", checkoutDataLayer.isValidCardNumber("1234-5678-9012-3456"));
+    }
+
+    @Test
+    public void testIsValidExpiryDateFailure() {
+        assertFalse("Invalid month", checkoutDataLayer.isValidExpiryDate("13/25"));
+        assertFalse("Invalid month", checkoutDataLayer.isValidExpiryDate("00/25"));
+        assertFalse("Wrong format", checkoutDataLayer.isValidExpiryDate("12/2025"));
+        assertFalse("Too long format", checkoutDataLayer.isValidExpiryDate("12/25/2025"));
+        assertFalse("Empty string", checkoutDataLayer.isValidExpiryDate(""));
+        assertFalse("Null input", checkoutDataLayer.isValidExpiryDate(null));
+        assertFalse("Wrong separator", checkoutDataLayer.isValidExpiryDate("12-25"));
+        assertFalse("Short year", checkoutDataLayer.isValidExpiryDate("12/5"));
+    }
+
+    @Test
+    public void testIsValidCVVFailure() {
+        assertFalse("Too short", checkoutDataLayer.isValidCVV("12"));
+        assertFalse("Too long", checkoutDataLayer.isValidCVV("1234"));
+        assertFalse("Contains letter", checkoutDataLayer.isValidCVV("12a"));
+        assertFalse("Empty string", checkoutDataLayer.isValidCVV(""));
+        assertFalse("Null input", checkoutDataLayer.isValidCVV(null));
     }
 }

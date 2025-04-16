@@ -86,3 +86,4 @@ public class testBrowsingDL {
                            DL.movies().stream().anyMatch(m -> m.getImdbRating() >= 5.0 && m.getImdbRating() <= 6.0));
     }
 }
+
