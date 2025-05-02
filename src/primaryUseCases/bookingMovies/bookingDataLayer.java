@@ -50,7 +50,7 @@ public class bookingDataLayer {
         System.out.println(consoleColors.GREEN_BOLD + "Booking successful!" + consoleColors.RESET);
         System.out.println(consoleColors.BLUE_BOLD + "Movie: " + consoleColors.RESET + movie.getTitle());
         System.out.println(consoleColors.BLUE_BOLD + "Showtime: " + consoleColors.RESET + showTime);
-        System.out.println(consoleColors.BLUE_BOLD + "Hall Type: " + consoleColors.RESET + movie.getHallType());
+        System.out.println(consoleColors.BLUE_BOLD + "Hall Type:: " + consoleColors.RESET + movie.getHallType());
         return newBooking.getBookingId();
     }
 
