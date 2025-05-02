@@ -14,12 +14,11 @@ import src.helpers.consoleColors;
 public class bookingBusinessLayer {
 
     private bookingDataLayer dataLayer;
-    private Scanner scanner;
+    
 
     // Constructor 
     public bookingBusinessLayer(bookingDataLayer dataLayer) {
         this.dataLayer = dataLayer;  // Instance of the BookingdataLayer
-        this.scanner = new Scanner(System.in);  // Scanner to take input from the user
     }
 
     // Book a movie
