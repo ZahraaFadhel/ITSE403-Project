@@ -1,17 +1,16 @@
 /*
 The businessLayer class acts as the intermediary between the presentationLayer (user interface) and the dataLayer (data handling) in the Cinema Management System.
 It contains the core logic for browsing movies and searching through them, including browse movies and searching by title, language and rating.
-This class ensures that business rules (e.g., validation, constraints) are enforced before interacting with the data layer.
+This class ensures that business rules are enforced before interacting with the data layer.
  */
 
 package src.primaryUseCases.browseMovies;
-
 import java.util.Scanner;
 
 public class browseMoviesBusinessLayer {
 
     private browseMoviesDataLayer dataLayer; // Reference to the data layer for interacting with movie data
-    private Scanner scanner; // Scanner object for reading user input from the console
+    private Scanner scanner; // Scanner object for reading user input
 
     // Constructor to initialize the business layer
     public browseMoviesBusinessLayer(browseMoviesDataLayer dataLayer) {
@@ -25,18 +24,10 @@ public class browseMoviesBusinessLayer {
         return dataLayer.browseMovies();
     }
 
-    // public void searchMoviesByTitle() {
-    //     System.out.print("Enter the title to search for: ");
-        
-    //     scanner = new Scanner(System.in); // Ensure it's reading from updated System.in
-    //     String title = scanner.nextLine();
-    //     dataLayer.searchMoviesByTitle(title);
-    // }
-
     // To display movies containing a specific keyword
     public void searchMoviesByTitle(Scanner sc) {
         System.out.print("Enter the title to search for: ");
-        String title = sc.nextLine(); // Use nextLine() to read the entire input
+        String title = sc.nextLine(); 
         dataLayer.searchMoviesByTitle(title);
     }
 
