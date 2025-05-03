@@ -1,10 +1,11 @@
-package src.primaryUseCases.manageMovies;
-
 /* 
 The presentationLayer class is part of the Cinema Management System and serves as the user interface for staff members to manage movies. 
 It interacts with the businessLayer to perform operations such as adding, updating, deleting, and displaying movies. 
 The class provides a text-based menu-driven interface that allows users to select and execute these operations.
- */
+*/
+
+package src.primaryUseCases.manageMovies;
+
 
 import java.util.Scanner;
 import src.helpers.consoleColors;
@@ -41,7 +42,7 @@ public class manageMoviesPresentationLayer {
     // New method to handle choices
     public void handleChoice(int choice) {
         if (choice > 4 || choice < 1) {
-            System.out.print(consoleColors.RED_BOLD + "Invalid input. Please enter a valid number.\n" + consoleColors.RESET);
+            System.out.print(consoleColors.RED_BOLD + "Invalid input. Please enter a valid number (between 1 and 4).\n" + consoleColors.RESET);
             return;
         }
 

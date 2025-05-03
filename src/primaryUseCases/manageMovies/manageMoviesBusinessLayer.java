@@ -1,11 +1,12 @@
-package src.primaryUseCases.manageMovies;
-
-import java.util.List;
 /*
 The businessLayer class acts as the intermediary between the presentationLayer (user interface) and the dataLayer (data handling) in the Cinema Management System.
 It contains the core logic for managing movies, including adding, updating, deleting, and displaying movies.
 This class ensures that business rules (e.g., validation, constraints) are enforced before interacting with the data layer.
  */
+
+package src.primaryUseCases.manageMovies;
+
+import java.util.List;
 import java.util.Scanner;
 import src.dataStore.Movie;
 import src.helpers.consoleColors;
@@ -86,7 +87,10 @@ public class manageMoviesBusinessLayer {
 
         // Prompt for hall type
         System.out.print(consoleColors.BLUE_BOLD + "Choose hall type (VIP, 3D, IMAX, Standard): " + consoleColors.RESET);
-        String hallType = scanner.nextLine();
+        String hallType = scanner.nextLine().toUpperCase();
+        if (hallType != "IMAX" && hallType != "3D" && hallType != "VIP" && hallType != "STANDARD") {
+            hallType = "Standard";
+        }
 
         // Create the new movie object
         Movie movie = new Movie(title, actors, summary, ageRestriction, imdbRating, language, duration, showTimes, hallType);
