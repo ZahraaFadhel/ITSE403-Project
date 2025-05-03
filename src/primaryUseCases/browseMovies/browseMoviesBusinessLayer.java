@@ -15,7 +15,6 @@ This class ensures that business rules (e.g., validation, constraints) are enfor
      // Constructor to initialize the business layer
      public browseMoviesBusinessLayer(browseMoviesDataLayer dataLayer) {
          this.dataLayer = dataLayer; // Instantiate the data layer
-         this.scanner = new Scanner(System.in); // Initialize the scanner for user input
      }
  
      // To display available movies
