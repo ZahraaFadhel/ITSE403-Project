@@ -58,6 +58,7 @@ public class checkoutPresentationLayer {
             switch (choice) { //.
                 case 1: //.
                     businessLayer.proceedToCheckout(); //.
+                    break;
                 case 2: //.
                     System.out.println(consoleColors.YELLOW_BOLD + "Processing... \n" + consoleColors.RESET); //.
                     returnToMainMenu(); //.
