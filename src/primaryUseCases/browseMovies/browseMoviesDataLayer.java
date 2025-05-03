@@ -1,6 +1,6 @@
 /**
  * This class represents the data layer for browsing movies in the system.
- * It interacts with the dataStore to retrieve and search for movies based on criteria: title, language and rating.
+ * It interacts with the dataStore to retrieve movies based on criteria such as title, language and rating.
  */
 
 package src.primaryUseCases.browseMovies;
@@ -27,6 +27,7 @@ public class browseMoviesDataLayer {
     // Method to browse all movies
     public int browseMovies() {
         int counter = 0;
+
         if (movies().isEmpty()) {
             System.out.println(consoleColors.RED_BOLD + "No movies available." + consoleColors.RESET);
             return 0;
@@ -37,6 +38,7 @@ public class browseMoviesDataLayer {
             System.out.println(movie);
             counter++;
         }
+
         System.out.println();
         return counter;
     }
@@ -57,6 +59,7 @@ public class browseMoviesDataLayer {
                 found = true;
             }
         }
+
         if (!found) {
             System.out.println(consoleColors.RED_BOLD + "No movies found with the title: " + title + consoleColors.RESET);
         }
@@ -75,6 +78,7 @@ public class browseMoviesDataLayer {
                 System.out.println(movie);
             }
         }
+
         System.out.println();
     }
 
@@ -91,6 +95,7 @@ public class browseMoviesDataLayer {
                 System.out.println(movie);
             }
         }
+        
         System.out.println();
     }
 

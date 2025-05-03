@@ -12,13 +12,12 @@ import src.helpers.validation;
 
 public class browseMoviesPresentationLayer {
 
-    private browseMoviesBusinessLayer businessLayer; // Reference to the business logic layer for handling movie
-    // operations
+    private browseMoviesBusinessLayer businessLayer; // Reference to the business logic layer 
     private Scanner scanner; // Scanner object for reading user input from the console
 
     public browseMoviesPresentationLayer(browseMoviesBusinessLayer businessLayer) {
-        this.businessLayer = businessLayer; // Instantiate the business layer
-        this.scanner = new Scanner(System.in); // Initialize the scanner object
+        this.businessLayer = businessLayer; 
+        this.scanner = new Scanner(System.in); 
     }
 
     // Constructor to initialize the presentation layer
@@ -29,18 +28,19 @@ public class browseMoviesPresentationLayer {
 
     // Method to display the main menu
     private void displayMenu() {
-        System.out.println(consoleColors.BLUE_BOLD + "\n--- Browse & Search Movies ---" + consoleColors.RESET);
-        System.out.println(consoleColors.GREEN_BOLD + "1. Browse Movies" + consoleColors.RESET);
-        System.out.println(consoleColors.GREEN_BOLD + "2. Search Movie by title" + consoleColors.RESET);
-        System.out.println(consoleColors.GREEN_BOLD + "3. Search Movie by language" + consoleColors.RESET);
-        System.out.println(consoleColors.GREEN_BOLD + "4. Search Movie by rating" + consoleColors.RESET);
-        System.out.println(consoleColors.RED_BOLD + "5. Return to Main Menu" + consoleColors.RESET);
+        System.out.println(consoleColors.BLUE_BOLD + "\n--- Browse & Search Movies --- " + consoleColors.RESET);
+        System.out.println(consoleColors.GREEN_BOLD + "1. Browse Movies " + consoleColors.RESET);
+        System.out.println(consoleColors.GREEN_BOLD + "2. Search Movie by title " + consoleColors.RESET);
+        System.out.println(consoleColors.GREEN_BOLD + "3. Search Movie by language " + consoleColors.RESET);
+        System.out.println(consoleColors.GREEN_BOLD + "4. Search Movie by rating " + consoleColors.RESET);
+        System.out.println(consoleColors.RED_BOLD + "5. Return to Main Menu " + consoleColors.RESET);
         System.out.println();
     }
 
     // Method to start the application and display the menu
     public void start() {
         scanner = new Scanner(System.in); // Initialize the scanner object
+
         while (true) {
             // Display the main menu with colored text for better readability
             displayMenu();
@@ -74,12 +74,13 @@ public class browseMoviesPresentationLayer {
                     return;
                 case 5:
                     System.out
-                            .println(consoleColors.YELLOW_BOLD + "\nReturning to main menu >>>" + consoleColors.RESET);
+                            .println(consoleColors.YELLOW_BOLD + "\nReturning to main menu >>>>" + consoleColors.RESET);
                         return;
                 default:
                     System.out.println(
-                            consoleColors.RED_BOLD + "Invalid choice. Please try again." + consoleColors.RESET);
+                            consoleColors.RED_BOLD + "Invalid choice. Please try again. " + consoleColors.RESET);
             }
+
         }
     }
 
@@ -88,7 +89,6 @@ public class browseMoviesPresentationLayer {
         System.out.println(consoleColors.YELLOW_BOLD + "Go Back? (y/n)" + consoleColors.RESET);
         System.out.print(consoleColors.YELLOW_BOLD + "Enter your choice: " + consoleColors.RESET);
 
-        // scanner = new Scanner(System.in);
         // Read the user's choice and validate it
         if (scanner.hasNext()) {
             int choice = scanner.next().charAt(0);
@@ -97,19 +97,17 @@ public class browseMoviesPresentationLayer {
             if (choice == 'y' || choice == 'Y') {
                 System.out
                         .println(consoleColors.YELLOW_BOLD + "\nReturning to browsing menu >>>" + consoleColors.RESET);
-                return; // Return to the main menu
+                return;
             } else if (choice == 'n' || choice == 'N') {
                 // Exit the system
                 System.out.println(consoleColors.RED_BOLD + "Exiting the system. Goodbye!" + consoleColors.RESET);
                 validation.closeScanner(scanner); // Close the scanner
                 System.exit(0);
             } else {
-                System.out.println(
-                        consoleColors.RED_BOLD + "Invalid choice. Returning to main menu." + consoleColors.RESET);
-                return; // Return to the main menu
+                System.out.println(consoleColors.RED_BOLD + "Invalid choice. Returning to main menu." + consoleColors.RESET);
+                return; 
             }
         }
 
     }
-
 }
