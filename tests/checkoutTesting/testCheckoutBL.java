@@ -139,3 +139,5 @@ public class testCheckoutBL {
         assertEquals("Empty discount code should not change the price", 100.0, discountedPrice, 0.001);
     }
 }
+
+// Phase 6: This file was already merged into main. This comment was added so it appears for review, in case further changes are needed.
