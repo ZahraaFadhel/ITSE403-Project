@@ -23,7 +23,7 @@ public class manageMoviesDataLayer { //.
 
     // Method to retrieve all movies //.
     public List<Movie> getMovies() { //.
-        return dataStore.getMovies(); // Return the list of movies from dataStore //.
+        return src.dataStore.getMovies(); // Return the list of movies from dataStore //.
     } //.
 
     // Method to add a movie to the list //.
