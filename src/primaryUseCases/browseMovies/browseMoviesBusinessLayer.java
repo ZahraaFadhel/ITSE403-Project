@@ -11,7 +11,6 @@ This class ensures that business rules (e.g., validation, constraints) are enfor
  public class browseMoviesBusinessLayer {
  
      private browseMoviesDataLayer dataLayer; // Reference to the data layer for interacting with movie data
-     private Scanner scanner; // Scanner object for reading user input from the console
  
      // Constructor to initialize the business layer
      public browseMoviesBusinessLayer(browseMoviesDataLayer dataLayer) {
