@@ -87,7 +87,10 @@ public class manageMoviesBusinessLayer {//.
 
         // Prompt for hall type//.
         System.out.print(consoleColors.BLUE_BOLD + "Choose hall type (VIP, 3D, IMAX, Standard): " + consoleColors.RESET);//.
-        String hallType = scanner.nextLine();//.
+         String hallType = scanner.nextLine();
+          if (hallType != "VIP" && hallType != "3D" && hallType != "IMAX" && hallType != "STANDARD") {
+            hallType = "Standard";
+        }
 
         // Create the new movie object//.
         Movie movie = new Movie(title, actors, summary, ageRestriction, imdbRating, language, duration, showTimes, hallType);//.
