@@ -34,15 +34,17 @@ public class manageMoviesPresentationLayer {
             int choice = validation.getValidIntegerInput("Enter your choice: ", scanner); 
 
             // Validate and perform the selected operation based on the user's choice 
-            handleChoice(choice); 
+            if (!handleChoice(choice)) {
+                return; // Exit when user chooses to return to main menu
+            }
         } 
     } 
 
     // New method to handle choices 
-    public void handleChoice(int choice) { 
+    public boolean handleChoice(int choice) { 
         if (choice > 4 || choice < 1) { 
             System.out.print(consoleColors.RED_BOLD + "Invalid input. Please enter a valid number.\n" + consoleColors.RESET); 
-            return; 
+            return true; // Continue showing menu
         } 
 
         switch (choice) { 
@@ -57,7 +59,8 @@ public class manageMoviesPresentationLayer {
                 break; 
             case 4: 
                 System.out.println(consoleColors.YELLOW_BOLD + "\nReturning to main menu >>>" + consoleColors.RESET); 
-                return; // Exit the application 
+                return false; // Exit to main menu
         } 
+        return true; // Continue showing menu
     } 
 } 

@@ -78,12 +78,16 @@ public class Main {
             switch (choice) {
                 case 1:
                     browseMovies.start();
+                    break;
                 case 2:
                     bookingMovies.start();
+                    break;
                 case 3:
                     checkout.start();
+                    break;
                 case 4:
                     manageMovies.start();
+                    break;
                 case 5:
                     System.out.println(consoleColors.RED_BOLD + "Exiting the system. Goodbye!" + consoleColors.RESET);
                     validation.closeScanner(sc);
