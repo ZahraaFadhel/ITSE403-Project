@@ -76,19 +76,18 @@ public class Main {
 
             // Process user input based on menu selection
             switch (choice) {
-                case 1 ->
+                case 1:
                     browseMovies.start();
-                case 2 ->
+                case 2:
                     bookingMovies.start();
-                case 3 ->
+                case 3:
                     checkout.start();
-                case 4 ->
+                case 4:
                     manageMovies.start();
-                case 5 -> {
+                case 5:
                     System.out.println(consoleColors.RED_BOLD + "Exiting the system. Goodbye!" + consoleColors.RESET);
                     validation.closeScanner(sc);
                     return;
-                }
             }
         }
     }
