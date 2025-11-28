@@ -29,46 +29,26 @@ public class dataStore {
         // Initialize the saved payment method
         savedPaymentMethod = new SavedPaymentMethod("MasterCard", "Manar Alshaikh", "8765 4321 8765 4321", "09/26", "456");
 
-        // Adding 4 sample movies for demonstration
+        // Adding 5 sample movies for demonstration
         movies.add(new Movie("Inception", new String[]{"Leonardo DiCaprio", "Joseph Gordon-Levitt", "Ellen Page"},
                 "A thief who enters the dreams of others.", 13, 8.8, "English", 148,
                 new String[]{"10:00 AM", "1:00 PM", "4:00 PM", "7:00 PM", "10:00 PM"}, "IMAX"));
 
-        movies.add(new Movie("Avatar", new String[]{"Sam Worthington", "Zoe Saldana", "Sigourney Weaver"},
-                "A marine on an alien planet.", 13, 7.9, "English", 162,
-                new String[]{"11:00 AM", "2:00 PM", "5:00 PM", "8:00 PM", "11:00 PM"}, "3D"));
-
         movies.add(new Movie("The Godfather", new String[]{"Marlon Brando", "Al Pacino", "James Caan"},
-                "The rise of a mafia family.", 18, 9.2, "English", 175,
-                new String[]{"12:00 PM", "3:00 PM", "6:00 PM", "9:00 PM", "12:00 AM"}, "Standard"));
-
-        movies.add(new Movie("The Message", new String[]{"Anthony Quinn", "Irene Papas", "Michael Ansara"},
-                "The story of Islam's prophet Muhammad.", 13, 8.2, "Arabic", 178,
-                new String[]{"1:00 PM", "4:00 PM", "7:00 PM", "10:00 PM"}, "Standard"));
+                "The rise of a mafia family.", 18, 10, "English", 175,
+                new String[]{"12:00 PM", "3:00 PM", "6:00 PM", "9:00 PM", "11:00 AM"}, "Standard"));
 
         movies.add(new Movie("Amélie", new String[]{"Audrey Tautou", "Mathieu Kassovitz"},
-                "A whimsical tale of a Parisian woman.", 13, 8.3, "French", 122,
-                new String[]{"2:00 PM", "5:00 PM", "8:00 PM"}, "Standard"));
+                "A whimsical tale of a Parisian woman.", 13, 5.3, "French", 122,
+                new String[]{"12:00 PM", "5:00 PM", "8:00 PM"}, "Standard"));
 
-        movies.add(new Movie("Spirited Away", new String[]{"Rumi Hiiragi", "Miyu Irino"},
-                "A girl enters a magical world.", 7, 8.6, "Japanese", 125,
-                new String[]{"10:00 AM", "1:00 PM", "4:00 PM", "7:00 PM"}, "3D"));
-
-        movies.add(new Movie("Parasite", new String[]{"Song Kang-ho", "Lee Sun-kyun"},
-                "A poor family schemes their way into a wealthy household.", 16, 8.5, "Korean", 132,
-                new String[]{"3:00 PM", "6:00 PM", "9:00 PM"}, "VIP"));
+        movies.add(new Movie("Bab Alharra", new String[]{"Ahmed Al-Fahad", "Sara Al-Mansoor"},
+                "Life in a Damascus neighborhood in the 1920s and 1930s", 16, 2.5, "Arabic", 132,
+                new String[]{"4:00 PM", "6:00 PM", "9:00 PM"}, "VIP"));
 
         movies.add(new Movie("The Dark Knight", new String[]{"Christian Bale", "Heath Ledger"},
                 "Batman fights the Joker.", 13, 9.0, "English", 152,
                 new String[]{"11:00 AM", "2:00 PM", "5:00 PM", "8:00 PM"}, "IMAX"));
-
-        movies.add(new Movie("Interstellar", new String[]{"Matthew McConaughey", "Anne Hathaway"},
-                "Explorers travel through a wormhole.", 13, 2.7, "English", 169,
-                new String[]{"12:00 PM", "4:00 PM", "8:00 PM"}, "IMAX"));
-
-        movies.add(new Movie("The Shawshank Redemption", new String[]{"Tim Robbins", "Morgan Freeman"},
-                "Two imprisoned men bond over years.", 15, 3.3, "English", 142,
-                new String[]{"1:00 PM", "5:00 PM", "9:00 PM"}, "Standard"));
 
         halls.add(new HallType("3D", 6.0));
         halls.add(new HallType("VIP", 7.0));

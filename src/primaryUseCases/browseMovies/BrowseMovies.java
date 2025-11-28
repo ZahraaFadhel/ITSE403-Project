@@ -49,6 +49,7 @@ public class BrowseMovies {
 
     public List<Movie> searchMoviesByTitle(String title) {
         title = title.toLowerCase().trim();
+        title = title.replaceAll("\\s+", " "); // convert multiple spaces to single space
         if (title.isEmpty()) {
             System.out.println(consoleColors.RED_BOLD + "Search title cannot be empty." + consoleColors.RESET);
             return new java.util.ArrayList<>();
@@ -96,6 +97,10 @@ public class BrowseMovies {
     }
 
     public List<Movie> searchMoviesByRating(double minRating, double maxRating) {
+        if (minRating < 0 || maxRating > 10 || minRating > maxRating || minRating == 0 && maxRating == 0) {
+            System.out.println(consoleColors.RED_BOLD + "Invalid rating range. Please enter ratings between 0 and 10." + consoleColors.RESET);
+            throw new IllegalArgumentException("Invalid rating range");
+        }
         List<Movie> results = new java.util.ArrayList<>();
         if (getMovies().isEmpty()) {
             System.out.println(consoleColors.RED_BOLD + "No movies available." + consoleColors.RESET);
@@ -166,6 +171,7 @@ public class BrowseMovies {
             switch (choice) {
                 case 1:
                     displayMovies();
+                    returnToMainMenu();
                     return;
                 case 2:
                     searchMoviesByTitlePrompt();
