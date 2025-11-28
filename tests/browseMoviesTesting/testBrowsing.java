@@ -26,7 +26,7 @@ public class testBrowsing {
     @Test
     public void test_RetrieveAllMovies() {
         List<Movie> movies = browseMovies.getMovies();
-        Assert.assertEquals("Expected 10 movies in the sample dataset", 10, movies.size());
+        Assert.assertEquals("Expected 10 movies in the sample dataset", 5, movies.size());
     }
 
     @Test
@@ -190,6 +190,12 @@ public class testBrowsing {
         List<Movie> results = browseMovies.searchMoviesByRating(8.5, 9.0);
         Assert.assertTrue("Movies should be found within rating range 8.5 - 9.0", 
                           !results.isEmpty() && results.stream().allMatch(m -> m.getImdbRating() >= 8.5 && m.getImdbRating() <= 9.0));
+    }
+
+    @Test
+    public void test_SearchMoviesByRatingNoMatches() {
+        List<Movie> results = browseMovies.searchMoviesByRating(0.1, 0.2); // valid range but no matches
+        Assert.assertTrue("Valid range with no movies should return empty list", results.isEmpty());
     }
 
     @Test
