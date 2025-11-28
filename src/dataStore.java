@@ -46,6 +46,30 @@ public class dataStore {
                 "The story of Islam's prophet Muhammad.", 13, 8.2, "Arabic", 178,
                 new String[]{"1:00 PM", "4:00 PM", "7:00 PM", "10:00 PM"}, "Standard"));
 
+        movies.add(new Movie("Amélie", new String[]{"Audrey Tautou", "Mathieu Kassovitz"},
+                "A whimsical tale of a Parisian woman.", 13, 8.3, "French", 122,
+                new String[]{"2:00 PM", "5:00 PM", "8:00 PM"}, "Standard"));
+
+        movies.add(new Movie("Spirited Away", new String[]{"Rumi Hiiragi", "Miyu Irino"},
+                "A girl enters a magical world.", 7, 8.6, "Japanese", 125,
+                new String[]{"10:00 AM", "1:00 PM", "4:00 PM", "7:00 PM"}, "3D"));
+
+        movies.add(new Movie("Parasite", new String[]{"Song Kang-ho", "Lee Sun-kyun"},
+                "A poor family schemes their way into a wealthy household.", 16, 8.5, "Korean", 132,
+                new String[]{"3:00 PM", "6:00 PM", "9:00 PM"}, "VIP"));
+
+        movies.add(new Movie("The Dark Knight", new String[]{"Christian Bale", "Heath Ledger"},
+                "Batman fights the Joker.", 13, 9.0, "English", 152,
+                new String[]{"11:00 AM", "2:00 PM", "5:00 PM", "8:00 PM"}, "IMAX"));
+
+        movies.add(new Movie("Interstellar", new String[]{"Matthew McConaughey", "Anne Hathaway"},
+                "Explorers travel through a wormhole.", 13, 2.7, "English", 169,
+                new String[]{"12:00 PM", "4:00 PM", "8:00 PM"}, "IMAX"));
+
+        movies.add(new Movie("The Shawshank Redemption", new String[]{"Tim Robbins", "Morgan Freeman"},
+                "Two imprisoned men bond over years.", 15, 3.3, "English", 142,
+                new String[]{"1:00 PM", "5:00 PM", "9:00 PM"}, "Standard"));
+
         halls.add(new HallType("3D", 6.0));
         halls.add(new HallType("VIP", 7.0));
         halls.add(new HallType("IMAX", 7.0));

@@ -41,58 +41,70 @@
          return counter;
      }
  
-     // Method to search movies by title
-     public void searchMoviesByTitle(String title) {
-         if (movies().isEmpty()) {
-             System.out.println(consoleColors.RED_BOLD + "No movies available." + consoleColors.RESET);
-             return;
-         }
- 
-         boolean found = false;
- 
-         // Display movies contaning entred input
-         for (Movie movie : movies()) {
-             if (movie.getTitle().toLowerCase().contains(title.toLowerCase())) {
-                 System.out.println(movie);
-                 found = true;
-             }
-         }
-         if (!found) {
-             System.out.println(consoleColors.RED_BOLD + "No movies found with the title: " + title + consoleColors.RESET);
-         }
-     }
- 
-     // Method to search movies by language
-     public void searchMoviesByLanguage(String language) {
-         if (movies().isEmpty()) {
-             System.out.println(consoleColors.RED_BOLD + "No movies available." + consoleColors.RESET);
-             return;
-         }
- 
-         // Display movies with matching language
-         for (Movie movie : movies()) {
-             if (movie.getLanguage().toLowerCase().contains(language.toLowerCase())) {
-                 System.out.println(movie);
-             }
-         }
-         System.out.println();
-     }
- 
-     // Method to search movies by IMDb rating range
-     public void searchMoviesByRating(double minRating, double maxRating) {
-         if (movies().isEmpty()) {
-             System.out.println(consoleColors.RED_BOLD + "No movies available." + consoleColors.RESET);
-             return;
-         }
- 
-         // Display movies within the rating range
-         for (Movie movie : movies()) {
-             if (movie.getImdbRating() >= minRating && movie.getImdbRating() <= maxRating) {
-                 System.out.println(movie);
-             }
-         }
-         System.out.println();
-     }
- 
- }
+    // Method to search movies by title
+    public List<Movie> searchMoviesByTitle(String title) {
+        title = title.toLowerCase().trim();
+        if (title.isEmpty()) {
+            System.out.println(consoleColors.RED_BOLD + "Search title cannot be empty." + consoleColors.RESET);
+            return new java.util.ArrayList<>();
+        }
+
+        List<Movie> results = new java.util.ArrayList<>();
+        if (movies().isEmpty()) {
+            System.out.println(consoleColors.RED_BOLD + "No movies available." + consoleColors.RESET);
+            return results;
+        }
+
+        // Display movies contaning entred input
+        for (Movie movie : movies()) {
+            if (movie.getTitle().toLowerCase().contains(title)) {
+                System.out.println(movie);
+                results.add(movie);
+            }
+        }
+        if (results.isEmpty()) {
+            System.out.println(consoleColors.RED_BOLD + "No movies found with the title: " + title + consoleColors.RESET);
+        }
+        return results;
+    }    // Method to search movies by language
+    public List<Movie> searchMoviesByLanguage(String language) {
+        language = language.toLowerCase().trim();
+        if (language.isEmpty()) {
+            System.out.println(consoleColors.RED_BOLD + "Search language cannot be empty." + consoleColors.RESET);
+            return new java.util.ArrayList<>();
+        }
+        
+        List<Movie> results = new java.util.ArrayList<>();
+        if (movies().isEmpty()) {
+            System.out.println(consoleColors.RED_BOLD + "No movies available." + consoleColors.RESET);
+            return results;
+        }
+
+        // Display movies with matching language
+        for (Movie movie : movies()) {
+            if (movie.getLanguage().toLowerCase().contains(language.toLowerCase())) {
+                System.out.println(movie);
+                results.add(movie);
+            }
+        }
+        System.out.println();
+        return results;
+    }    // Method to search movies by IMDb rating range
+    public List<Movie> searchMoviesByRating(double minRating, double maxRating) {
+        List<Movie> results = new java.util.ArrayList<>();
+        if (movies().isEmpty()) {
+            System.out.println(consoleColors.RED_BOLD + "No movies available." + consoleColors.RESET);
+            return results;
+        }
+
+        // Display movies within the rating range
+        for (Movie movie : movies()) {
+            if (movie.getImdbRating() >= minRating && movie.getImdbRating() <= maxRating) {
+                System.out.println(movie);
+                results.add(movie);
+            }
+        }
+        System.out.println();
+        return results;
+    } }
  
