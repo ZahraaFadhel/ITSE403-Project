@@ -21,9 +21,7 @@ import src.helpers.validation;
 import src.primaryUseCases.bookingMovies.bookingBusinessLayer;
 import src.primaryUseCases.bookingMovies.bookingDataLayer;
 import src.primaryUseCases.bookingMovies.bookingPresentationLayer;
-import src.primaryUseCases.browseMovies.browseMoviesBusinessLayer;
-import src.primaryUseCases.browseMovies.browseMoviesDataLayer;
-import src.primaryUseCases.browseMovies.browseMoviesPresentationLayer;
+import src.primaryUseCases.browseMovies.BrowseMovies;
 import src.primaryUseCases.checkout.checkoutBusinessLayer;
 import src.primaryUseCases.checkout.checkoutDataLayer;
 import src.primaryUseCases.checkout.checkoutPresentationLayer;
@@ -42,9 +40,7 @@ public class Main {
         bookingPresentationLayer bookingMovies = new bookingPresentationLayer(bookingBL);
 
         // Initialize Browsing Use Case
-        browseMoviesDataLayer browseDL = new browseMoviesDataLayer(globalDataStore);
-        browseMoviesBusinessLayer browseBL = new browseMoviesBusinessLayer(browseDL);
-        browseMoviesPresentationLayer browseMovies = new browseMoviesPresentationLayer(browseBL);
+        BrowseMovies browseMovies = new BrowseMovies(globalDataStore);
 
         // Initialize Checkout Use Case
         checkoutDataLayer checkoutDL = new checkoutDataLayer();
