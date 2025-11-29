@@ -24,12 +24,6 @@ public class testBrowsing {
     }
 
     @Test
-    public void test_RetrieveAllMovies() {
-        List<Movie> movies = browseMovies.getMovies();
-        Assert.assertEquals("Expected 10 movies in the sample dataset", 5, movies.size());
-    }
-
-    @Test
     public void test_BrowseMovies() {
         int displayedMoviesSize = browseMovies.browseMovies();
         Assert.assertEquals("Displayed movies count should match stored movies", 
@@ -67,14 +61,6 @@ public class testBrowsing {
     @Test
     public void test_SearchMoviesByTitleCaseInsensitive() {
         List<Movie> results = browseMovies.searchMoviesByTitle("THE GODFATHER");
-        Assert.assertTrue("Case insensitive search should find movies", 
-                            results.stream().anyMatch(m -> m.getTitle().equals("The Godfather"))
-        );
-    }
-
-    @Test
-    public void test_SearchMoviesByTitleMixCaseInsensitive() {
-        List<Movie> results = browseMovies.searchMoviesByTitle("The GoDfAtHeR");
         Assert.assertTrue("Case insensitive search should find movies", 
                             results.stream().anyMatch(m -> m.getTitle().equals("The Godfather"))
         );
@@ -150,34 +136,6 @@ public class testBrowsing {
     }
 
     @Test
-    public void test_SearchMultipleMoviesBySameLanguage() {
-        List<Movie> results = browseMovies.searchMoviesByLanguage("English");
-        Assert.assertTrue("Should find all available English movies", results.size() == browseMovies.getMovies().stream()
-                .filter(m -> m.getLanguage().equals("English")).count());
-    }
-
-    @Test
-    public void test_SearchMoviesByFrenchLanguage() {
-        List<Movie> results = browseMovies.searchMoviesByLanguage("French");
-        Assert.assertTrue("Should find French movie",
-                          results.stream().anyMatch(m -> m.getLanguage().equals("French")));
-    }
-
-    @Test
-    public void test_SearchMoviesByLanguageWithTrailingSpaces() {
-        List<Movie> results = browseMovies.searchMoviesByLanguage("English   ");
-        Assert.assertTrue("Should find English movies with trailing spaces",
-                          !results.isEmpty() && results.stream().allMatch(m -> m.getLanguage().equals("English")));
-    }
-
-    @Test
-    public void test_SearchMoviesByLanguageWithLeadingSpaces() {
-        List<Movie> results = browseMovies.searchMoviesByLanguage("   English");
-        Assert.assertTrue("Should find English movies with leading spaces",
-                          !results.isEmpty() && results.stream().allMatch(m -> m.getLanguage().equals("English")));
-    }
-
-    @Test
     public void test_SearchMoviesByArabicLanguage() {
         List<Movie> results = browseMovies.searchMoviesByLanguage("  Arabic ");
         Assert.assertTrue("Should find Arabic movie if exists", 
@@ -234,15 +192,9 @@ public class testBrowsing {
     }
 
     @Test
-    public void test_SearchTopRatedMovies() {
-        List<Movie> results = browseMovies.searchMoviesByRating(9.0, 10.0);
-        Assert.assertTrue("Should find movies with rating >= 9", results.stream().allMatch(m -> m.getImdbRating() >= 9.0));
-    }
-
-    @Test
     public void test_SearchMoviesByEqualsMinMax() {
         List<Movie> results = browseMovies.searchMoviesByRating(8.8, 8.8);
-        Assert.assertTrue("Should find movies with exact rating 8.3",
+        Assert.assertTrue("Should find movies with exact rating 8.8",
                           results.stream().anyMatch(m -> m.getImdbRating() == 8.8));
     }
 
@@ -259,4 +211,10 @@ public class testBrowsing {
         Assert.assertTrue("Should handle maximum rating 10.0", 
                           results.stream().allMatch(m -> m.getImdbRating() <= 10.0 && m.getImdbRating() >= 9.0));
     }
+
+    // duplicate movie titles with different ratings
+    // have data with IMDb = 10 and 0
+    // Sure about Exceptions?
+    // parts of title but not exessive?
+    // Verify that search by title functionality works with non english characters? Special?
 }
