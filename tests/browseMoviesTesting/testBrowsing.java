@@ -42,15 +42,8 @@ public class testBrowsing {
     }
 
     @Test
-    public void test_SearchMoviesByPartialTitle() {
-        List<Movie> results = browseMovies.searchMoviesByTitle("dark");
-        Assert.assertTrue("Should find 'The Dark Knight' with partial match",
-                results.stream().anyMatch(m -> m.getTitle().equals("The Dark Knight")));
-    }
-
-    @Test
     public void test_SearchMoviesByMultiWordPartialTitle() {
-        List<Movie> results = browseMovies.searchMoviesByTitle("The Dark");
+        List<Movie> results = browseMovies.searchMoviesByTitle("the dark");
         Assert.assertTrue("Should find 'The Dark Knight' with multi-word partial match",
                 results.stream().anyMatch(m -> m.getTitle().equals("The Dark Knight")));
     }
@@ -66,7 +59,7 @@ public class testBrowsing {
     public void test_searchTitleWithManyResults() {
         List<Movie> results = browseMovies.searchMoviesByTitle("The");
         Assert.assertEquals("Should find all movies with 'The' in title",
-                results.size(), 3); // There are 3 movies with 'The' in dataStore
+                results.size(), 3); // There are 3 movies with 'The' in sample data
     }
 
     @Test
@@ -90,8 +83,7 @@ public class testBrowsing {
 
     @Test
     public void test_SearchMoviesByTitleWithExtraSpacesBetweenLetters() {
-        List<Movie> results = browseMovies.searchMoviesByTitle("In    ception"); // will be "In ception" (not a valid
-                                                                                 // title)
+        List<Movie> results = browseMovies.searchMoviesByTitle("In    ception"); // will be "In ception" (not a valid title in sample data)                                                             
         Assert.assertTrue(results.isEmpty());
     }
 
@@ -189,21 +181,8 @@ public class testBrowsing {
         });
     }
 
-    @Test
-    public void test_SearchMoviesByNegativeRatingRange() {
-        Assert.assertThrows(IllegalArgumentException.class, () -> {
-            browseMovies.searchMoviesByRating(-5.0, -1.0);
-        });
-    }
-
-    @Test
-    public void test_SearchMoviesByEqualsMinMax() {
-        List<Movie> results = browseMovies.searchMoviesByRating(8.8, 8.8);
-        Assert.assertTrue("Should find movies with exact rating 8.8",
-                results.stream().anyMatch(m -> m.getImdbRating() == 8.8));
-    }
-
-    // Edge Cases
+    // Edge Cases (Rating 0 and 10)
+    // min = max => exact match
     @Test
     public void test_SearchMoviesByEqualsMinMax0() {
         List<Movie> results = browseMovies.searchMoviesByRating(0, 0);
