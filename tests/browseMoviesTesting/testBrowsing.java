@@ -134,7 +134,7 @@ public class testBrowsing {
     @Test
     public void test_SearchMoviesByLanguageWithNumbers() {
         Assert.assertThrows(IllegalArgumentException.class, () -> {
-            browseMovies.searchMoviesByLanguage("Arabic123");
+            browseMovies.searchMoviesByLanguage("1Arabic23");
         });
     }
 
