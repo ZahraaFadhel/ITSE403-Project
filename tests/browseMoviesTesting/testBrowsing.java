@@ -205,6 +205,14 @@ public class testBrowsing {
                         results.size() == browseMovies.getMovies().size());
     }
 
+    // Test displayMovies shows all movies
+    @Test
+    public void test_BrowseMovies() {
+        int displayedMoviesSize = browseMovies.browseMovies();
+        Assert.assertEquals("Displayed movies count should match stored movies", 
+                            displayedMoviesSize, browseMovies.getMovies().size());
+    }
+
     // Presentation Layer Tests
     @Test
     public void testPL_InvalidMenuChoiceOutOfRange() {
@@ -295,13 +303,6 @@ public class testBrowsing {
             System.setIn(originalIn);
             System.setOut(originalOut);
         }
-    }
-
-    @Test
-    public void test_BrowseMovies() {
-        int displayedMoviesSize = browseMovies.browseMovies();
-        Assert.assertEquals("Displayed movies count should match stored movies", 
-                            displayedMoviesSize, browseMovies.getMovies().size());
     }
 
 }
