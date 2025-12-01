@@ -27,14 +27,20 @@ public class BrowseMovies {
         this.scanner = scanner;
     }
 
-
     public List<Movie> getMovies() {
         return dataStore.getMovies();
     }
 
     public int browseMovies() {
+        List<Movie> movies = dataStore.getMovies();
+
+        if (movies == null || movies.isEmpty()) {
+            System.out.println("No movies available.");
+            return 0;
+        }
+
         int counter = 0;
-        if (getMovies().isEmpty()) {
+        if (movies.isEmpty()) {
             System.out.println(consoleColors.RED_BOLD + "No movies available." + consoleColors.RESET);
             return 0;
         }
@@ -68,18 +74,25 @@ public class BrowseMovies {
             }
         }
         if (results.isEmpty()) {
-            System.out.println(consoleColors.RED_BOLD + "No movies found with the title: " + title + consoleColors.RESET);
+            System.out
+                    .println(consoleColors.RED_BOLD + "No movies found with the title: " + title + consoleColors.RESET);
         }
         return results;
     }
 
     public List<Movie> searchMoviesByLanguage(String language) {
         language = language.toLowerCase().trim();
+        
         if (language.isEmpty()) {
             System.out.println(consoleColors.RED_BOLD + "Search language cannot be empty." + consoleColors.RESET);
             return new java.util.ArrayList<>();
         }
-        
+
+        // Check for numbers or special characters 
+        if (!language.matches("[a-zA-Z\\s]+")) {
+            throw new IllegalArgumentException("Language cannot contain numbers or special characters");
+        }
+
         List<Movie> results = new java.util.ArrayList<>();
         if (getMovies().isEmpty()) {
             System.out.println(consoleColors.RED_BOLD + "No movies available." + consoleColors.RESET);
@@ -97,8 +110,9 @@ public class BrowseMovies {
     }
 
     public List<Movie> searchMoviesByRating(double minRating, double maxRating) {
-        if (minRating < 0 || maxRating > 10 || minRating > maxRating || minRating == 0 && maxRating == 0) {
-            System.out.println(consoleColors.RED_BOLD + "Invalid rating range. Please enter ratings between 0 and 10." + consoleColors.RESET);
+        if (minRating < 0 || maxRating > 10 || minRating > maxRating) {
+            System.out.println(consoleColors.RED_BOLD + "Invalid rating range. Please enter ratings between 0 and 10."
+                    + consoleColors.RESET);
             throw new IllegalArgumentException("Invalid rating range");
         }
         List<Movie> results = new java.util.ArrayList<>();
@@ -116,7 +130,6 @@ public class BrowseMovies {
         System.out.println();
         return results;
     }
-
 
     public int displayMovies() {
         System.out.println("Here are the movies available:");
@@ -136,13 +149,25 @@ public class BrowseMovies {
     }
 
     public void searchMoviesByRatingPrompt() {
-        System.out.print("Enter the minimum IMDb rating: ");
-        double minRating = scanner.nextDouble();
+        double minRating;
+        double maxRating;
 
-        System.out.print("Enter the maximum IMDb rating: ");
-        double maxRating = scanner.nextDouble();
-        
-        searchMoviesByRating(minRating, maxRating);
+        try {
+            System.out.print("Enter the minimum IMDb rating: ");
+            minRating = scanner.nextDouble();
+
+            System.out.print("Enter the maximum IMDb rating: ");
+            maxRating = scanner.nextDouble();
+            scanner.nextLine(); // Consume remaining newline
+
+            searchMoviesByRating(minRating, maxRating);
+
+        } catch (java.util.InputMismatchException e) {
+            System.out.println(consoleColors.RED_BOLD +
+                    "Invalid input." +
+                    consoleColors.RESET);
+            scanner.nextLine(); // Clear invalid input from buffer
+        }
     }
 
     public void displayMenu() {
@@ -164,7 +189,8 @@ public class BrowseMovies {
             scanner.nextLine();
 
             if (choice > 5 || choice < 1) {
-                System.out.print(consoleColors.RED_BOLD + "Invalid input. Please enter a valid number.\n" + consoleColors.RESET);
+                System.out.print(
+                        consoleColors.RED_BOLD + "Invalid input. Please enter a valid number.\n" + consoleColors.RESET);
                 continue;
             }
 
@@ -186,14 +212,16 @@ public class BrowseMovies {
                     returnToMainMenu();
                     return;
                 case 5:
-                    System.out.println(consoleColors.YELLOW_BOLD + "\nReturning to main menu >>>" + consoleColors.RESET);
+                    System.out
+                            .println(consoleColors.YELLOW_BOLD + "\nReturning to main menu >>>" + consoleColors.RESET);
                     return;
                 default:
-                    System.out.println(consoleColors.RED_BOLD + "Invalid choice. Please try again." + consoleColors.RESET);
+                    System.out.println(
+                            consoleColors.RED_BOLD + "Invalid choice. Please try again." + consoleColors.RESET);
             }
         }
-    } 
-    
+    }
+
     public void returnToMainMenu() {
         System.out.println(consoleColors.YELLOW_BOLD + "Go Back? (y/n)" + consoleColors.RESET);
         System.out.print(consoleColors.YELLOW_BOLD + "Enter your choice: " + consoleColors.RESET);
@@ -203,14 +231,16 @@ public class BrowseMovies {
             scanner.nextLine();
 
             if (choice == 'y' || choice == 'Y') {
-                System.out.println(consoleColors.YELLOW_BOLD + "\nReturning to browsing menu >>>" + consoleColors.RESET);
+                System.out
+                        .println(consoleColors.YELLOW_BOLD + "\nReturning to browsing menu >>>" + consoleColors.RESET);
                 return;
             } else if (choice == 'n' || choice == 'N') {
                 System.out.println(consoleColors.RED_BOLD + "Exiting the system. Goodbye!" + consoleColors.RESET);
                 validation.closeScanner(scanner);
                 System.exit(0);
             } else {
-                System.out.println(consoleColors.RED_BOLD + "Invalid choice. Returning to main menu." + consoleColors.RESET);
+                System.out.println(
+                        consoleColors.RED_BOLD + "Invalid choice. Returning to main menu." + consoleColors.RESET);
                 return;
             }
         }

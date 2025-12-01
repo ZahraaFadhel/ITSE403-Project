@@ -7,6 +7,10 @@ import src.primaryUseCases.browseMovies.BrowseMovies;
 import src.dataStore;
 import src.dataStore.Movie;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.List;
 
 /**
@@ -28,6 +32,13 @@ public class testBrowsing {
         int displayedMoviesSize = browseMovies.browseMovies();
         Assert.assertEquals("Displayed movies count should match stored movies", 
                             displayedMoviesSize, browseMovies.getMovies().size());
+    }
+
+    @Test
+    public void test_BrowseMoviesEmpty() {
+        sampleDataStore.setMovies(null);
+        int displayedMoviesSize = browseMovies.browseMovies();
+        Assert.assertEquals("Should display 0 movies when no movies are available", 0, displayedMoviesSize);
     }
 
     // Search by title
@@ -67,6 +78,13 @@ public class testBrowsing {
     }
 
     @Test
+    public void test_searchTitleWithManayResults(){
+        List<Movie> results = browseMovies.searchMoviesByTitle("The");
+        Assert.assertEquals("Should find multiple movies with 'The' in title", 
+                          results.size(), 3); // There are 3 movies with 'The' in title
+    }
+
+    @Test
     public void test_SearchMoviesByEmptyTitle() {
         List<Movie> results = browseMovies.searchMoviesByTitle("");
         Assert.assertTrue("Empty string should return empty list", results.isEmpty());
@@ -79,23 +97,16 @@ public class testBrowsing {
     }
 
     @Test
-    public void test_SearchMoviesByTitleWithTrailingSpaces() {
-        List<Movie> results = browseMovies.searchMoviesByTitle("Inception   ");
-        Assert.assertTrue("Should find movie even with trailing spaces",
-                          results.stream().anyMatch(m -> m.getTitle().equals("Inception")));
-    }
-
-    @Test
-    public void test_SearchMoviesByTitleWithLeadingSpaces() {
-        List<Movie> results = browseMovies.searchMoviesByTitle("   Inception");
-        Assert.assertTrue("Should find movie even with leading spaces",
-                          results.stream().anyMatch(m -> m.getTitle().equals("Inception")));
-    }
-
-    @Test
     public void test_SearchMoviesByTitleWithBothSpaces() {
         List<Movie> results = browseMovies.searchMoviesByTitle("   Inception   ");
         Assert.assertTrue("Should find movie even with leading spaces",
+                          results.stream().anyMatch(m -> m.getTitle().equals("Inception")));
+    }
+
+    @Test
+    public void test_SearchMoviesByTitleWithExtraSpacesBetweenLetters() {
+        List<Movie> results = browseMovies.searchMoviesByTitle("In    ception"); // will be "In ception" (not a valid title)
+        Assert.assertFalse("Should not find movie with extra spaces between its letters",
                           results.stream().anyMatch(m -> m.getTitle().equals("Inception")));
     }
 
@@ -142,6 +153,20 @@ public class testBrowsing {
                           results.stream().allMatch(m -> m.getLanguage().equals("Arabic")));
     }
 
+    @Test
+    public void test_SearchMoviesByLanguageWithNumbers() { 
+        Assert.assertThrows(IllegalArgumentException.class, () -> {
+            browseMovies.searchMoviesByLanguage("Arabic123");
+        });
+    }
+
+    @Test
+    public void test_SearchMoviesByLanguageWithSpecialCharacters() { 
+        Assert.assertThrows(IllegalArgumentException.class, () -> {
+            browseMovies.searchMoviesByLanguage("English!");
+        });
+    }
+
     // Search by rating
     @Test
     public void test_SearchMoviesByValidRatingRange() {
@@ -185,17 +210,25 @@ public class testBrowsing {
     }
 
     @Test
-    public void test_SearchMoviesByZeroRatingRange() {
-        Assert.assertThrows(IllegalArgumentException.class, () -> {
-            browseMovies.searchMoviesByRating(0.0, 0.0);
-        });
-    }
-
-    @Test
     public void test_SearchMoviesByEqualsMinMax() {
         List<Movie> results = browseMovies.searchMoviesByRating(8.8, 8.8);
         Assert.assertTrue("Should find movies with exact rating 8.8",
                           results.stream().anyMatch(m -> m.getImdbRating() == 8.8));
+    }
+
+    // Edge Cases
+    @Test
+    public void test_SearchMoviesByEqualsMinMax0() {
+        List<Movie> results = browseMovies.searchMoviesByRating(0, 0);
+        Assert.assertTrue("Should find movies with exact rating 0",
+                          results.stream().anyMatch(m -> m.getImdbRating() == 0));
+    }
+
+    @Test
+    public void test_SearchMoviesByEqualsMinMax10() {
+        List<Movie> results = browseMovies.searchMoviesByRating(10, 10);
+        Assert.assertTrue("Should find movies with exact rating 10",
+                          results.stream().anyMatch(m -> m.getImdbRating() == 10));
     }
 
     @Test
@@ -212,9 +245,59 @@ public class testBrowsing {
                           results.stream().allMatch(m -> m.getImdbRating() <= 10.0 && m.getImdbRating() >= 9.0));
     }
 
-    // duplicate movie titles with different ratings
-    // have data with IMDb = 10 and 0
-    // Sure about Exceptions?
-    // parts of title but not exessive?
-    // Verify that search by title functionality works with non english characters? Special?
+    // Presentation Layer Tests
+    @Test
+    public void testPL_InvalidMenuChoiceOutOfRange() {
+        String input = "99\n5\n"; // Invalid choice 99, then exit with 5
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
+        
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        
+        browseMovies.start();
+        
+        String output = outContent.toString();
+        Assert.assertTrue("Should display invalid input message", 
+                          output.contains("Invalid input. Please enter a valid number."));
+        
+        System.setOut(System.out);
+    }
+
+    @Test
+    public void testPL_InvalidMenuChoiceZero() {
+        String input = "0\n5\n"; // Invalid choice 0, then exit with 5
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
+        
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        
+        browseMovies.start();
+        
+        String output = outContent.toString();
+        Assert.assertTrue("Should display invalid input message for choice 0", 
+                          output.contains("Invalid input. Please enter a valid number."));
+        
+        System.setOut(System.out);
+    }
+
+    @Test
+    public void testPL_InvalidMenuChoiceNegative() {
+        String input = "-1\n5\n"; // Invalid choice -1, then exit with 5
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
+        
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        
+        browseMovies.start();
+        
+        String output = outContent.toString();
+        Assert.assertTrue("Should display invalid input message for negative choice", 
+                          output.contains("Invalid input. Please enter a valid number."));
+        
+        System.setOut(System.out);
+    }
+
 }

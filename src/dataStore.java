@@ -50,6 +50,14 @@ public class dataStore {
                 "Batman fights the Joker.", 13, 9.0, "English", 152,
                 new String[]{"11:00 AM", "2:00 PM", "5:00 PM", "8:00 PM"}, "IMAX"));
 
+        movies.add(new Movie("Perfect Score", new String[]{"John Doe", "Jane Smith"},
+                "A masterpiece of cinema.", 0, 10.0, "English", 120,
+                new String[]{"12:00 PM", "3:00 PM", "6:00 PM", "9:00 PM"}, "VIP"));
+
+        movies.add(new Movie("The Worst Film Ever", new String[]{"Unknown Actor"},
+                "A critically panned disaster.", 18, 0.0, "English", 95,
+                new String[]{"11:00 PM"}, "Standard"));
+                
         halls.add(new HallType("3D", 6.0));
         halls.add(new HallType("VIP", 7.0));
         halls.add(new HallType("IMAX", 7.0));
