@@ -29,7 +29,7 @@ public class dataStore {
         // Initialize the saved payment method
         savedPaymentMethod = new SavedPaymentMethod("MasterCard", "Manar Alshaikh", "8765 4321 8765 4321", "09/26", "456");
 
-        // Adding 5 sample movies for demonstration
+        // Adding 7 sample movies for demonstration
         movies.add(new Movie("Inception", new String[]{"Leonardo DiCaprio", "Joseph Gordon-Levitt", "Ellen Page"},
                 "A thief who enters the dreams of others.", 13, 8.8, "English", 148,
                 new String[]{"10:00 AM", "1:00 PM", "4:00 PM", "7:00 PM", "10:00 PM"}, "IMAX"));
@@ -57,7 +57,7 @@ public class dataStore {
         movies.add(new Movie("The Worst Film Ever", new String[]{"Unknown Actor"},
                 "A critically panned disaster.", 18, 0.0, "English", 95,
                 new String[]{"11:00 PM"}, "Standard"));
-                
+
         halls.add(new HallType("3D", 6.0));
         halls.add(new HallType("VIP", 7.0));
         halls.add(new HallType("IMAX", 7.0));

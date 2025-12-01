@@ -305,4 +305,11 @@ public class testBrowsing {
         }
     }
 
+    @Test
+    public void test_BrowseMovies() {
+        int displayedMoviesSize = browseMovies.browseMovies();
+        Assert.assertEquals("Displayed movies count should match stored movies", 
+                            displayedMoviesSize, browseMovies.getMovies().size());
+    }
+
 }
