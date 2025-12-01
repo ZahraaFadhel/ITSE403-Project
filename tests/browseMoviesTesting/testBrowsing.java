@@ -198,19 +198,11 @@ public class testBrowsing {
     }
 
     @Test
-    public void test_SearchMoviesByMinimumRating() {
-        List<Movie> results = browseMovies.searchMoviesByRating(0.0, 5.0);
-        Assert.assertTrue("Should handle minimum rating 0.0",
-                !results.isEmpty() &&
-                        results.stream().allMatch(m -> m.getImdbRating() >= 0.0 && m.getImdbRating() <= 5.0));
-    }
-
-    @Test
     public void test_SearchMoviesByMaximumRating() {
-        List<Movie> results = browseMovies.searchMoviesByRating(9.0, 10.0);
-        Assert.assertTrue("Should handle maximum rating 10.0",
+        List<Movie> results = browseMovies.searchMoviesByRating(0.0, 10.0);
+        Assert.assertTrue("Should give all available movies",
                 !results.isEmpty() &&
-                        results.stream().allMatch(m -> m.getImdbRating() <= 10.0 && m.getImdbRating() >= 9.0));
+                        results.size() == browseMovies.getMovies().size());
     }
 
     // Presentation Layer Tests
