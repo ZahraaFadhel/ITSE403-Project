@@ -82,16 +82,16 @@ public class testBrowsing {
     }
 
     @Test
-    public void test_SearchMoviesByTitleWithExtraSpacesBetweenLetters() {
-        List<Movie> results = browseMovies.searchMoviesByTitle("In    ception"); // will be "In ception" (not a valid title in sample data)                                                             
-        Assert.assertTrue(results.isEmpty());
-    }
-
-    @Test
     public void test_SearchMoviesByTitleWithInternalSpaces() {
         List<Movie> results = browseMovies.searchMoviesByTitle("  The  Dark   KniGHt   ");
         Assert.assertTrue("Should handle extra internal spaces (within the title)",
                 results.stream().anyMatch(m -> m.getTitle().equals("The Dark Knight")));
+    }
+
+    @Test
+    public void test_SearchMoviesByTitleWithExtraSpacesBetweenLetters() {
+        List<Movie> results = browseMovies.searchMoviesByTitle("In    ception"); // will be "In ception" (not a valid title in sample data)                                                             
+        Assert.assertTrue(results.isEmpty());
     }
 
     @Test
