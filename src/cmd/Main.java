@@ -3,9 +3,7 @@ package src.cmd;
 import src.dataStore;
 import src.helpers.consoleColors;
 import src.helpers.validation;
-import src.primaryUseCases.bookingMovies.bookingBusinessLayer;
-import src.primaryUseCases.bookingMovies.bookingDataLayer;
-import src.primaryUseCases.bookingMovies.bookingPresentationLayer;
+import src.primaryUseCases.bookingMovies.BookingMovies;
 import src.primaryUseCases.browseMovies.BrowseMovies;
 import src.primaryUseCases.checkout.CheckoutMovies;
 import src.primaryUseCases.manageMovies.AddMovie;
@@ -21,9 +19,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
 
         // ---------------- BOOKING -----------------
-        bookingDataLayer bookingDL = new bookingDataLayer(globalDataStore);
-        bookingBusinessLayer bookingBL = new bookingBusinessLayer(bookingDL);
-        bookingPresentationLayer bookingMovies = new bookingPresentationLayer(bookingBL);
+        BookingMovies bookingMovies = new BookingMovies(globalDataStore);
 
         // ---------------- BROWSING ----------------
         BrowseMovies browseMovies = new BrowseMovies(globalDataStore);
