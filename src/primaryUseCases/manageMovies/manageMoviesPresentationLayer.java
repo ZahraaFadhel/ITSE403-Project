@@ -1,66 +1,50 @@
-/* 
-The presentationLayer class is part of the Cinema Management System and serves as the user interface for staff members to manage movies. 
-It interacts with the businessLayer to perform operations such as adding, updating, deleting, and displaying movies. 
-The class provides a text-based menu-driven interface that allows users to select and execute these operations.
- */ 
+package src.primaryUseCases.manageMovies;
 
-package src.primaryUseCases.manageMovies; 
+import java.util.Scanner;
+import src.dataStore;
+import src.helpers.consoleColors;
+import src.helpers.validation;
 
-import java.util.Scanner; 
-import src.helpers.consoleColors; 
-import src.helpers.validation; 
+public class manageMoviesPresentationLayer {
 
-public class manageMoviesPresentationLayer { 
-    private manageMoviesBusinessLayer businessLayer; 
-    private Scanner scanner; 
+    private AddMovie businessLayer;
+    private Scanner scanner;
+    private dataStore globalStore;
 
-    // Constructor to initialize the presentation layer with a Scanner 
-    public manageMoviesPresentationLayer(manageMoviesBusinessLayer businessLayer, Scanner scanner) { 
-        this.businessLayer = businessLayer; 
-        this.scanner = scanner; // Use the provided scanner 
-    } 
+    public manageMoviesPresentationLayer(AddMovie businessLayer, dataStore globalStore, Scanner scanner) {
+        this.businessLayer = businessLayer;
+        this.globalStore = globalStore;
+        this.scanner = scanner;
+    }
 
-    // Method to start the application and display the menu 
-    public void start() { 
-        while (true) { 
-            System.out.println(consoleColors.BLUE_BOLD + "\n--- Manage Movies ---" + consoleColors.RESET); 
-            System.out.println(consoleColors.GREEN_BOLD + "1. Add Movie" + consoleColors.RESET); 
-            System.out.println(consoleColors.GREEN_BOLD + "2. Update Movie" + consoleColors.RESET); 
-            System.out.println(consoleColors.GREEN_BOLD + "3. Delete Movie" + consoleColors.RESET); 
-            System.out.println(consoleColors.RED_BOLD + "4. Return to Main Menu" + consoleColors.RESET); 
-            System.out.println(); 
+    public void start() {
+        while (true) {
+            System.out.println(consoleColors.BLUE_BOLD + "\n--- Manage Movies ---" + consoleColors.RESET);
+            System.out.println(consoleColors.GREEN_BOLD + "1. Add Movie" + consoleColors.RESET);
+            System.out.println(consoleColors.RED_BOLD + "2. Return to Main Menu" + consoleColors.RESET);
 
-            // Read the user's choice 
-            int choice = validation.getValidIntegerInput("Enter your choice: ", scanner); 
+            int choice = validation.getValidIntegerInput("Enter your choice: ", scanner);
 
-            // Validate and perform the selected operation based on the user's choice 
             if (!handleChoice(choice)) {
-                return; // Exit when user chooses to return to main menu
+                return;
             }
-        } 
-    } 
+        }
+    }
 
-    // New method to handle choices 
-    public boolean handleChoice(int choice) { 
-        if (choice > 4 || choice < 1) { 
-            System.out.print(consoleColors.RED_BOLD + "Invalid input. Please enter a valid number.\n" + consoleColors.RESET); 
-            return true; // Continue showing menu
-        } 
+    public boolean handleChoice(int choice) {
+        if (choice < 1 || choice > 2) {
+            System.out.print(consoleColors.RED_BOLD + "Invalid input. Please enter a valid number.\n" + consoleColors.RESET);
+            return true;
+        }
 
-        switch (choice) { 
-            case 1: 
-                businessLayer.addMovie(); // Call the business layer to add a movie 
-                break; 
-            case 2: 
-                businessLayer.updateMovie(); // Call the business layer to update a movie 
-                break; 
-            case 3: 
-                businessLayer.deleteMovie(); // Call the business layer to delete a movie 
-                break; 
-            case 4: 
-                System.out.println(consoleColors.YELLOW_BOLD + "\nReturning to main menu >>>" + consoleColors.RESET); 
-                return false; // Exit to main menu
-        } 
-        return true; // Continue showing menu
-    } 
-} 
+        switch (choice) {
+            case 1:
+                businessLayer.addMovie();
+                break;
+            case 2:
+                System.out.println(consoleColors.YELLOW_BOLD + "\nReturning to main menu >>>" + consoleColors.RESET);
+                return false;
+        }
+        return true;
+    }
+}
