@@ -13,31 +13,18 @@ import src.primaryUseCases.manageMovies.manageMoviesPresentationLayer;
 
 import java.util.Scanner;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 03da1bce66075e4e58227c9fe5b9d94a87c654b4
 public class Main {
 
     public static void main(String[] args) {
 
-<<<<<<< HEAD
-        // Initialize Booking Use Case
-       BookingMovies bookingMovie= new BookingMovies(globalDataStore);
-        // Initialize Browsing Use Case
-       BrowseMovies browseMovies = new BrowseMovies(globalDataStore);
-=======
         dataStore globalDataStore = new dataStore();
         Scanner sc = new Scanner(System.in);
 
         // ---------------- BOOKING -----------------
-        bookingDataLayer bookingDL = new bookingDataLayer(globalDataStore);
-        bookingBusinessLayer bookingBL = new bookingBusinessLayer(bookingDL);
-        bookingPresentationLayer bookingMovies = new bookingPresentationLayer(bookingBL);
+        BookingMovies bookingMovies = new BookingMovies(globalDataStore);
 
         // ---------------- BROWSING ----------------
         BrowseMovies browseMovies = new BrowseMovies(globalDataStore);
->>>>>>> 03da1bce66075e4e58227c9fe5b9d94a87c654b4
 
         // ---------------- CHECKOUT ----------------
         checkoutDataLayer checkoutDL = new checkoutDataLayer();
@@ -70,25 +57,10 @@ public class Main {
             }
 
             switch (choice) {
-<<<<<<< HEAD
-                case 1:
-                   browseMovies.start();
-                    break;
-                case 2:
-                    bookingMovie.start();
-                    break;
-                case 3:
-                    checkout.start();
-                    break;
-                case 4:
-                    manageMovies.start();
-                    break;
-=======
                 case 1: browseMovies.start(); break;
                 case 2: bookingMovies.start(); break;
                 case 3: checkout.start(); break;
                 case 4: manageMovies.start(); break;
->>>>>>> 03da1bce66075e4e58227c9fe5b9d94a87c654b4
                 case 5:
                     System.out.println(consoleColors.RED_BOLD +
                             "Exiting the system. Goodbye!" +
