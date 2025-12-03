@@ -18,9 +18,7 @@ package src.cmd;
 import src.dataStore;
 import src.helpers.consoleColors;
 import src.helpers.validation;
-import src.primaryUseCases.bookingMovies.bookingBusinessLayer;
-import src.primaryUseCases.bookingMovies.bookingDataLayer;
-import src.primaryUseCases.bookingMovies.bookingPresentationLayer;
+import src.primaryUseCases.bookingMovies.BookingMovies;
 import src.primaryUseCases.browseMovies.BrowseMovies;
 import src.primaryUseCases.checkout.checkoutBusinessLayer;
 import src.primaryUseCases.checkout.checkoutDataLayer;
@@ -29,18 +27,17 @@ import src.primaryUseCases.manageMovies.manageMoviesBusinessLayer;
 import src.primaryUseCases.manageMovies.manageMoviesDataLayer;
 import src.primaryUseCases.manageMovies.manageMoviesPresentationLayer;
 import java.util.Scanner;
+
+
 public class Main {
 
     public static void main(String[] args) {
         dataStore globalDataStore = new dataStore();
 
         // Initialize Booking Use Case
-        bookingDataLayer bookingDL = new bookingDataLayer(globalDataStore);
-        bookingBusinessLayer bookingBL = new bookingBusinessLayer(bookingDL);
-        bookingPresentationLayer bookingMovies = new bookingPresentationLayer(bookingBL);
-
+       BookingMovies bookingMovie= new BookingMovies(globalDataStore);
         // Initialize Browsing Use Case
-        BrowseMovies browseMovies = new BrowseMovies(globalDataStore);
+       BrowseMovies browseMovies = new BrowseMovies(globalDataStore);
 
         // Initialize Checkout Use Case
         checkoutDataLayer checkoutDL = new checkoutDataLayer();
@@ -73,10 +70,10 @@ public class Main {
             // Process user input based on menu selection
             switch (choice) {
                 case 1:
-                    browseMovies.start();
+                   browseMovies.start();
                     break;
                 case 2:
-                    bookingMovies.start();
+                    bookingMovie.start();
                     break;
                 case 3:
                     checkout.start();
