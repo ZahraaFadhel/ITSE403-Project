@@ -7,9 +7,7 @@ import src.primaryUseCases.bookingMovies.bookingBusinessLayer;
 import src.primaryUseCases.bookingMovies.bookingDataLayer;
 import src.primaryUseCases.bookingMovies.bookingPresentationLayer;
 import src.primaryUseCases.browseMovies.BrowseMovies;
-import src.primaryUseCases.checkout.checkoutBusinessLayer;
-import src.primaryUseCases.checkout.checkoutDataLayer;
-import src.primaryUseCases.checkout.checkoutPresentationLayer;
+import src.primaryUseCases.checkout.CheckoutMovies;
 import src.primaryUseCases.manageMovies.AddMovie;
 import src.primaryUseCases.manageMovies.manageMoviesPresentationLayer;
 
@@ -31,9 +29,7 @@ public class Main {
         BrowseMovies browseMovies = new BrowseMovies(globalDataStore);
 
         // ---------------- CHECKOUT ----------------
-        checkoutDataLayer checkoutDL = new checkoutDataLayer();
-        checkoutBusinessLayer checkoutBL = new checkoutBusinessLayer(checkoutDL);
-        checkoutPresentationLayer checkout = new checkoutPresentationLayer(checkoutBL);
+        CheckoutMovies checkoutMovies = new CheckoutMovies();
 
         // ---------------- MANAGE MOVIES -----------
         AddMovie manageBL = new AddMovie(sc);
@@ -63,7 +59,7 @@ public class Main {
             switch (choice) {
                 case 1: browseMovies.start(); break;
                 case 2: bookingMovies.start(); break;
-                case 3: checkout.start(); break;
+                case 3: checkoutMovies.start(); break;
                 case 4: manageMovies.start(); break;
                 case 5:
                     System.out.println(consoleColors.RED_BOLD +
