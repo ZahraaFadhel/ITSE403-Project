@@ -67,7 +67,7 @@ class testAddMovie {
                 new String[]{"10:00 AM", "13:15 PM", "16:30 PM", "19:45 PM", "22:00 PM"},
                 m.getShowTimes()
         );
-        assertEquals("The Shawshank Redemption", m.getTitle());
+        assertEquals("STANDARD", m.getHallType());
     }
 
     // ------------------------------
