@@ -1,0 +1,79 @@
+digraph CFG {
+    node [fontsize=12];
+
+    Entry [shape=oval, label="Entry"];
+
+    S1 [shape=box, label="language = language.toLowerCase().trim();"];
+
+    // if (language.isEmpty())
+    C1 [shape=diamond, label="language.isEmpty()"];
+    P1 [shape=box, label="System.out.println(\nRED + \"Search language cannot be empty.\" + RESET\n);"];
+
+    // invalid characters check
+    C2 [shape=diamond, label="!language.matches(\"[a-zA-Z\\\\s]+\")"];
+    EX [shape=box, label="throw new IllegalArgumentException(\n\"Language cannot contain numbers or special characters\"\n);"];
+
+    S2 [shape=box, label="List<Movie> results = new ArrayList<>();"];
+
+    // if (getMovies().isEmpty())
+    C3 [shape=diamond, label="getMovies().isEmpty()"];
+    P2 [shape=box, label="System.out.println(\nRED + \"No movies available.\" + RESET\n);"];
+
+    // loop through movies
+    LoopCond [shape=diamond, label="for (Movie movie : getMovies())"];
+
+    // if (movie.getLanguage().toLowerCase().contains(language))
+    C4 [shape=diamond, label="movie.getLanguage().toLowerCase().contains(language)"];
+    P3 [shape=box, label="System.out.println(movie);"];
+    S3 [shape=box, label="results.add(movie);"];
+
+    // print empty line after loop
+    P4 [shape=box, label="System.out.println();"];
+
+    // merge before returning results
+    M_return [shape=circle, label=""];
+    R [shape=box, label="return results;"];
+    Exit [shape=oval, label="Exit"];
+
+    // Edges
+    Entry -> S1;
+    S1 -> C1;
+
+    // empty language path
+    C1 -> P1 [label="true"];
+    P1 -> M_return;
+
+    // language not empty
+    C1 -> C2 [label="false"];
+
+    // invalid characters
+    C2 -> EX [label="true"];
+    EX -> Exit;
+
+    // valid characters
+    C2 -> S2 [label="false"];
+
+    // movies empty path
+    S2 -> C3;
+    C3 -> P2 [label="true"];
+    P2 -> M_return;
+
+    // movies not empty → loop
+    C3 -> LoopCond [label="false"];
+
+    // loop flow
+    LoopCond -> C4 [label="true (has movie)"];
+    LoopCond -> P4 [label="false (no more movies)"];
+
+    // language match found
+    C4 -> P3 [label="true"];
+    P3 -> S3;
+    S3 -> LoopCond;
+
+    // after loop, print empty line
+    P4 -> M_return;
+
+    // merge return
+    M_return -> R;
+    R -> Exit;
+}

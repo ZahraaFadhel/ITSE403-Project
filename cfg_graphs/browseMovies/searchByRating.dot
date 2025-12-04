@@ -1,0 +1,97 @@
+digraph CFG {
+    node [fontsize=12];
+
+    Entry [shape=oval, label="Entry"];
+
+    S1 [shape=box, label="minRating = Double.parseDouble(minInput);"];
+    S2 [shape=box, label="maxRating = Double.parseDouble(maxInput);"];
+
+    // === Range validation split by || with proper arrow directions ===
+    C1 [shape=diamond, label="minRating < 0"];
+    C2 [shape=diamond, label="maxRating > 10"];
+    C3 [shape=diamond, label="minRating > maxRating"];
+
+    // Merge for invalid-range BEFORE printing
+    M_exRange [shape=circle, label=""];
+
+    P1 [shape=box, label="System.out.println(\nRED + \"Invalid rating range. Enter 0-10.\" + RESET\n);"];
+
+    // Single throw for all invalid-range & invalid-input paths
+    EX [shape=box, label="throw new IllegalArgumentException(\"Invalid rating range\");"];
+
+    // Merge for NumberFormatException
+    M_exInput [shape=circle, label=""];
+
+    Catch_P [shape=box, label="System.out.println(\nRED + \"Invalid rating input.\" + RESET\n);"];
+
+    // Valid range
+    S3 [shape=box, label="List<Movie> results = new ArrayList<>();"];
+
+    // empty movies
+    C4 [shape=diamond, label="getMovies().isEmpty()"];
+    P2 [shape=box, label="System.out.println(\nRED + \"No movies available.\" + RESET\n);"];
+
+    LoopCond [shape=diamond, label="for (Movie movie : getMovies())"];
+
+    C5 [shape=diamond, label="minRating <= imdb <= maxRating"];
+    P3 [shape=box, label="System.out.println(movie);"];
+    S4 [shape=box, label="results.add(movie);"];
+
+    P4 [shape=box, label="System.out.println();"];
+
+    M_return [shape=circle, label=""];
+    R [shape=box, label="return results;"];
+    Exit [shape=oval, label="Exit"];
+
+    // === Edges ===
+    Entry -> S1;
+    S1 -> S2;
+
+    // exception from parsing
+    S1 -> M_exInput [style=dotted, label="NumberFormatException"];
+    S2 -> M_exInput [style=dotted, label="NumberFormatException"];
+
+    M_exInput -> Catch_P;
+    Catch_P -> EX;
+    EX -> Exit;
+
+    // Start short-circuit chain
+    S2 -> C1;
+
+    // C1
+    C1 -> M_exRange [label="true"];
+    C1 -> C2 [label="false"];
+
+    // C2
+    C2 -> M_exRange [label="true"];
+    C2 -> C3 [label="false"];
+
+    // C3
+    C3 -> M_exRange [label="true"];
+    C3 -> S3 [label="false"];
+
+    // M_exRange → print → throw
+    M_exRange -> P1;
+    P1 -> EX;
+
+    // Continue normal flow
+    S3 -> C4;
+
+    C4 -> P2 [label="true"];
+    P2 -> M_return;
+
+    C4 -> LoopCond [label="false"];
+
+    LoopCond -> C5 [label="true"];
+    LoopCond -> P4 [label="false"];
+
+    C5 -> P3 [label="true"];
+    P3 -> S4;
+    S4 -> LoopCond;
+
+
+    P4 -> M_return;
+
+    M_return -> R;
+    R -> Exit;
+}
