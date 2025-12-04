@@ -148,7 +148,7 @@ public class testBrowsing {
     // Search by rating
     @Test
     public void test_SearchMoviesByValidRatingRange() {
-        List<Movie> results = browseMovies.searchMoviesByRating(8.5, 9.0);
+        List<Movie> results = browseMovies.searchMoviesByRating("8.5", "9.0");
         Assert.assertTrue("Movies should be found within rating range 8.5 - 9.0",
                 !results.isEmpty()
                         && results.stream().allMatch(m -> m.getImdbRating() >= 8.5 && m.getImdbRating() <= 9.0));
@@ -156,28 +156,28 @@ public class testBrowsing {
 
     @Test
     public void test_SearchMoviesByRatingNoMatches() {
-        List<Movie> results = browseMovies.searchMoviesByRating(0.1, 0.2); // valid range but no matches
+        List<Movie> results = browseMovies.searchMoviesByRating("0.1", "0.2"); // valid range but no matches
         Assert.assertTrue("Valid range with no movies should return empty list", results.isEmpty());
     }
 
     @Test
     public void test_SearchMoviesByInvalidMinRatingRange() {
         Assert.assertThrows(IllegalArgumentException.class, () -> {
-            browseMovies.searchMoviesByRating(-1.0, 10);
+            browseMovies.searchMoviesByRating("-1.0", "10");
         });
     }
 
     @Test
     public void test_SearchMoviesByInvalidMaxRatingRange() {
         Assert.assertThrows(IllegalArgumentException.class, () -> {
-            browseMovies.searchMoviesByRating(0, 11.0);
+            browseMovies.searchMoviesByRating("0", "11.0");
         });
     }
 
     @Test
     public void test_SearchMoviesByInvertedRatingRange() {
         Assert.assertThrows(IllegalArgumentException.class, () -> {
-            browseMovies.searchMoviesByRating(9.0, 8.0);
+            browseMovies.searchMoviesByRating("9.0", "8.0");
         });
     }
 
@@ -185,21 +185,21 @@ public class testBrowsing {
     // min = max => exact match
     @Test
     public void test_SearchMoviesByEqualsMinMax0() {
-        List<Movie> results = browseMovies.searchMoviesByRating(0, 0);
+        List<Movie> results = browseMovies.searchMoviesByRating("0", "0");
         Assert.assertTrue("Should find movies with exact rating 0",
                 results.stream().anyMatch(m -> m.getImdbRating() == 0));
     }
 
     @Test
     public void test_SearchMoviesByEqualsMinMax10() {
-        List<Movie> results = browseMovies.searchMoviesByRating(10, 10);
+        List<Movie> results = browseMovies.searchMoviesByRating("10", "10");
         Assert.assertTrue("Should find movies with exact rating 10",
                 results.stream().anyMatch(m -> m.getImdbRating() == 10));
     }
 
     @Test
     public void test_SearchMoviesByMaximumRating() {
-        List<Movie> results = browseMovies.searchMoviesByRating(0.0, 10.0);
+        List<Movie> results = browseMovies.searchMoviesByRating("0.0", "10.0");
         Assert.assertTrue("Should give all available movies",
                 !results.isEmpty() &&
                         results.size() == browseMovies.getMovies().size());
@@ -208,14 +208,14 @@ public class testBrowsing {
     @Test
     public void test_SearchMoviesByEmptyMinRating() {
         Assert.assertThrows(IllegalArgumentException.class, () -> {
-            browseMovies.searchMoviesByRating(Double.NaN, 5.0);
+            browseMovies.searchMoviesByRating("", "5.0");
         });
     }
 
     @Test
     public void test_SearchMoviesByEmptyMaxRating() {
         Assert.assertThrows(IllegalArgumentException.class, () -> {
-            browseMovies.searchMoviesByRating(5.0, Double.NaN);
+            browseMovies.searchMoviesByRating("6.0", "");
         });
     }
 

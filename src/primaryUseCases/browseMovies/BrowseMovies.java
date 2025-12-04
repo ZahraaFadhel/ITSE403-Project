@@ -5,6 +5,7 @@
 
 package src.primaryUseCases.browseMovies;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import src.dataStore;
@@ -82,13 +83,13 @@ public class BrowseMovies {
 
     public List<Movie> searchMoviesByLanguage(String language) {
         language = language.toLowerCase().trim();
-        
+
         if (language.isEmpty()) {
             System.out.println(consoleColors.RED_BOLD + "Search language cannot be empty." + consoleColors.RESET);
             return new java.util.ArrayList<>();
         }
 
-        // Check for numbers or special characters 
+        // Check for numbers or special characters
         if (!language.matches("[a-zA-Z\\s]+")) {
             throw new IllegalArgumentException("Language cannot contain numbers or special characters");
         }
@@ -109,8 +110,12 @@ public class BrowseMovies {
         return results;
     }
 
-    public List<Movie> searchMoviesByRating(double minRating, double maxRating) {
-        if (minRating < 0 || maxRating > 10 || minRating > maxRating || Double.isNaN(minRating) || Double.isNaN(maxRating)) {
+    public List<Movie> searchMoviesByRating(String minInput, String maxInput) {
+        double minRating = Double.parseDouble(minInput);
+        double maxRating = Double.parseDouble(maxInput);
+
+        if (minRating < 0 || maxRating > 10 || minRating > maxRating || Double.isNaN(minRating)
+                || Double.isNaN(maxRating)) {
             System.out.println(consoleColors.RED_BOLD + "Invalid rating range. Please enter ratings between 0 and 10."
                     + consoleColors.RESET);
             throw new IllegalArgumentException("Invalid rating range");
@@ -149,24 +154,19 @@ public class BrowseMovies {
     }
 
     public void searchMoviesByRatingPrompt() {
-        double minRating;
-        double maxRating;
-
         try {
             System.out.print("Enter the minimum IMDb rating: ");
-            minRating = scanner.nextDouble();
+            String minInput = scanner.nextLine().trim();
 
             System.out.print("Enter the maximum IMDb rating: ");
-            maxRating = scanner.nextDouble();
-            scanner.nextLine(); // Consume remaining newline
+            String maxInput = scanner.nextLine().trim();
 
-            searchMoviesByRating(minRating, maxRating);
+            searchMoviesByRating(maxInput, maxInput);
 
-        } catch (java.util.InputMismatchException e) {
+        } catch (NumberFormatException | InputMismatchException e) {
             System.out.println(consoleColors.RED_BOLD +
                     "Invalid input." +
                     consoleColors.RESET);
-            scanner.nextLine(); // Clear invalid input from buffer
         }
     }
 
