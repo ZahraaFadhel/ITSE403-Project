@@ -1,0 +1,57 @@
+digraph CFG {
+    node [fontsize=12];
+
+    Entry [shape=oval, label="Entry"];
+
+    // Computation steps
+    S1 [shape=box, label="movie = getMovieByTitle(title)"];
+
+    // Decision 1: Is movie found?
+    C1 [shape=diamond, label="movie == null?"];
+    P1 [shape=box, label="println(\"Movie not found!\")"];
+
+    // Decision 2: Is showtime valid?
+    S2 [shape=box, label="isValid = validateShowtime(movie, showTime)"];
+    C2 [shape=diamond, label="isValid == false"];
+    P2 [shape=box, label="println(\"Invalid showtime!\")"];
+
+    // Booking creation
+    S3 [shape=box, label="newBooking = new Booking(movie, showTime.trim())"];
+    S4 [shape=box, label="bookings = getBookings()"];
+    S5 [shape=box, label="bookings.add(newBooking)"];
+    S6 [shape=box, label="setBookings(bookings)"];
+    P3 [shape=box, label="println(\"Booking Successful!\")"];
+
+    // Return nodes
+    ExitFail [shape=oval, label="return \"\""];
+    ExitSuccess [shape=oval, label="return bookingId"];
+
+    // Edges
+    Entry -> S1;
+
+    // Movie not found
+    S1 -> C1;
+    C1 -> P1 [label="true"];
+    P1 -> ExitFail;
+
+    // Movie found
+    C1 -> S2 [label="false"];
+
+    // Showtime invalid
+    S2 -> C2;
+    C2 -> P2 [label="true"];
+    P2 -> ExitFail;
+
+    // Showtime valid
+    C2 -> S3 [label="false"];
+
+    // Create booking steps
+    S3 -> S4;
+    S4 -> S5;
+    S5 -> S6;
+    S6 -> P3;
+    P3 -> ExitSuccess;
+}
+
+
+

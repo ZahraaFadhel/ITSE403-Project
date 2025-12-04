@@ -1,13 +1,8 @@
 package src.primaryUseCases.bookingMovies; 
 
- 
-
 import java.util.List; 
 
 import java.util.Scanner; 
-
- 
-
 import src.dataStore; 
 
 import src.dataStore.Movie; 
@@ -17,22 +12,12 @@ import src.dataStore.Booking;
 import src.helpers.consoleColors; 
 
 import src.helpers.validation; 
-
- 
-
 public class BookingMovies { 
-
- 
 
     private dataStore dataStore; 
 
     private Scanner scanner; 
-
- 
-
     public static boolean testMode = false; 
-
- 
 
     public BookingMovies(dataStore ds) { 
 
@@ -41,8 +26,6 @@ public class BookingMovies {
         this.scanner = new Scanner(System.in); 
 
     } 
-
- 
 
     public BookingMovies(dataStore ds, Scanner scanner) { 
 
