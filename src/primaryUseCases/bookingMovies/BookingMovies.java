@@ -1,8 +1,3 @@
-/**
- * Booking Movies Use Case
- * Single class containing all functionality for booking, viewing, and canceling movies.
- */
-
 package src.primaryUseCases.bookingMovies;
 
 import java.util.List;
@@ -19,6 +14,8 @@ public class BookingMovies {
     private dataStore dataStore;
     private Scanner scanner;
 
+    public static boolean testMode = false;
+
     public BookingMovies(dataStore ds) {
         this.dataStore = ds;
         this.scanner = new Scanner(System.in);
@@ -31,31 +28,47 @@ public class BookingMovies {
 
     // ------------------------- HELPER METHODS ---------------------------- //
 
+    /**
+     * Normalize text: trim spaces, unify internal spacing, lowercase.
+     */
+    private String normalize(String text) {
+        if (text == null) return null;
+        return text.trim().replaceAll("\\s+", " ").toLowerCase();
+    }
+
+    /**
+     * Returns a movie by title after normalizing both user input and stored title.
+     */
     public Movie getMovieByTitle(String movieTitle) {
         if (movieTitle == null) return null;
 
-        movieTitle = movieTitle.toLowerCase().trim();
+        String normalizedInput = normalize(movieTitle);
+
         for (Movie m : dataStore.getMovies()) {
-            if (m.getTitle().toLowerCase().equals(movieTitle)) {
+            String normalizedTitle = normalize(m.getTitle());
+            if (normalizedTitle.equals(normalizedInput)) {
                 return m;
             }
         }
         return null;
     }
 
+    /**
+     * Validates showtime with trimming and case-insensitive match.
+     */
     public boolean validateShowtime(Movie movie, String showTime) {
         if (movie == null || showTime == null) return false;
 
-        for (String time : movie.getShowTimes()) {
-            if (time.equalsIgnoreCase(showTime)) {
+        String userTime = showTime.trim().toLowerCase();
+
+        for (String t : movie.getShowTimes()) {
+            if (t.trim().toLowerCase().equals(userTime)) {
                 return true;
             }
         }
+
         return false;
     }
-
-  
-
 
     // --------------------- CORE FUNCTIONS ------------------------- //
 
@@ -72,46 +85,13 @@ public class BookingMovies {
             return "";
         }
 
-        Booking newBooking = new Booking(movie, showTime);
+        Booking newBooking = new Booking(movie, showTime.trim());
         List<Booking> bookings = dataStore.getBookings();
         bookings.add(newBooking);
         dataStore.setBookings(bookings);
 
         System.out.println(consoleColors.GREEN_BOLD + "Booking Successful!" + consoleColors.RESET);
         return newBooking.getBookingId();
-    }
-
-    public int viewBookings() {
-        List<Booking> bookings = dataStore.getBookings();
-
-        if (bookings.isEmpty()) {
-            System.out.println(consoleColors.RED_BOLD + "No Bookings Available." + consoleColors.RESET);
-            return 0;
-        }
-
-        int counter = 0;
-        for (Booking b : bookings) {
-            System.out.println(b);
-            counter++;
-        }
-        return counter;
-    }
-
-    public boolean cancelBooking(String bookingId) {
-        List<Booking> bookings = dataStore.getBookings();
-
-        for (Booking b : bookings) {
-            if (b.getBookingId().equalsIgnoreCase(bookingId)) {
-                bookings.remove(b);
-                dataStore.setBookings(bookings);
-
-                System.out.println(consoleColors.GREEN_BOLD + "Booking canceled successfully." + consoleColors.RESET);
-                return true;
-            }
-        }
-
-        System.out.println(consoleColors.RED_BOLD + "Booking ID Not Found." + consoleColors.RESET);
-        return false;
     }
 
     // --------------------- PROMPTS ---------------------------- //
@@ -126,81 +106,41 @@ public class BookingMovies {
         bookMovie(title, showTime);
     }
 
-    public void viewBookingsPrompt() {
-        viewBookings();
-    }
-
-    public void cancelBookingPrompt() {
-        System.out.print("Enter booking ID to cancel: ");
-        String id = scanner.nextLine();
-
-        cancelBooking(id);
-    }
-
-    // --------------------- MENU + START ---------------------------- //
+    // --------------------- MENU & TEST MODE ---------------------------- //
 
     public void displayMenu() {
         System.out.println(consoleColors.BLUE_BOLD + "\n--- Movie Booking ---" + consoleColors.RESET);
         System.out.println(consoleColors.GREEN_BOLD + "1. Book a Movie" + consoleColors.RESET);
-        System.out.println(consoleColors.GREEN_BOLD + "2. View All Bookings" + consoleColors.RESET);
-        System.out.println(consoleColors.GREEN_BOLD + "3. Cancel a Booking" + consoleColors.RESET);
         System.out.println(consoleColors.RED_BOLD + "4. Return to Main Menu" + consoleColors.RESET);
     }
 
     public void start() {
-    scanner = new Scanner(System.in);
-
-    while (true) {
-        displayMenu();
-
-        int choice = validation.getValidIntegerInput("Enter your choice: ", scanner);
-        scanner.nextLine(); // clear input buffer
-
-        if (choice < 1 || choice > 4) {
-            System.out.println("Invalid choice.");
-            continue;
+        if (!testMode) {
+            scanner = new Scanner(System.in);
         }
 
-        switch (choice) {
-            case 1:
-                bookMoviePrompt();
-                returnToMainMenu();
-                return;
+        while (true) {
+            displayMenu();
 
-            case 2:
-                viewBookingsPrompt();
-                returnToMainMenu();
-                return;
+            int choice = validation.getValidIntegerInput("Enter your choice: ", scanner);
+            scanner.nextLine(); // clear buffer
 
-            case 3:
-                cancelBookingPrompt();
-                returnToMainMenu();
-                return;
+            if (choice < 1 || choice > 4) {
+                System.out.println("Invalid choice.");
+                if (testMode) return;
+                continue;
+            }
 
-            case 4:
-                System.out.println("Returning to main menu...");
-                return;
+            switch (choice) {
+                case 1:
+                    bookMoviePrompt();
+                    if (testMode) return;
+                    break;
+
+                case 4:
+                    System.out.println("Returning to main menu...");
+                    return;
+            }
         }
     }
 }
-    
-
-    public void returnToMainMenu() {
-        System.out.println(consoleColors.YELLOW_BOLD + "Go Back? (y/n)" + consoleColors.RESET);
-        System.out.print("Enter your choice: ");
-
-        char choice = scanner.next().charAt(0);
-        scanner.nextLine();
-
-        if (choice == 'y' || choice == 'Y') {
-            System.out.println(consoleColors.YELLOW_BOLD + "Returning..." + consoleColors.RESET);
-            return;
-        } else if (choice == 'n' || choice == 'N') {
-            System.out.println(consoleColors.RED_BOLD + "Exiting system..." + consoleColors.RESET);
-            System.exit(0);
-        } else {
-            System.out.println(consoleColors.RED_BOLD + "Invalid choice." + consoleColors.RESET);
-        }
-    }
-}
-

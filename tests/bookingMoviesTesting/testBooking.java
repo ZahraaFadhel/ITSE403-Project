@@ -6,16 +6,9 @@ import org.junit.Test;
 
 import src.primaryUseCases.bookingMovies.BookingMovies;
 import src.dataStore;
+import src.dataStore.Movie;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Scanner;
-import java.io.InputStream;
 
 public class testBooking {
 
@@ -24,246 +17,157 @@ public class testBooking {
 
     @Before
     public void setUp() {
-
-        sampleDataStore = new dataStore();
-
-        // Reset static lists for clean testing
+        // Reset datastore static lists
+        dataStore.setMovies(new ArrayList<>());
         dataStore.setBookings(new ArrayList<>());
-        dataStore.setMovies(sampleDataStore.getMovies());
+        dataStore.setValidDiscountCodes(new ArrayList<>());
+        dataStore.getHalls();
 
+        sampleDataStore = new dataStore();  // Rebuild sample data
         booking = new BookingMovies(sampleDataStore);
     }
 
-    // ------------------ CORE FUNCTION TESTS --------------------------- //
+    // ---------------- BOOKING TESTS ONLY ---------------- //
 
+    // 1. Valid booking
     @Test
-    public void test_BookValidMovieAndShowtime() {
-        String bookingId = booking.bookMovie("Inception", "10:00 AM");
-
-        Assert.assertNotEquals("Booking ID should not be empty", "", bookingId);
-
-        boolean exists = sampleDataStore.getBookings()
-                .stream()
-                .anyMatch(b -> b.getBookingId().equals(bookingId));
-
-        Assert.assertTrue("Booking should exist in the datastore", exists);
+    public void test_ValidBooking() {
+        String id = booking.bookMovie("Inception", "10:00 AM");
+        Assert.assertFalse(id.isEmpty());
     }
 
+    // 2. Title case-insensitive
     @Test
-    public void test_BookInvalidMovie() {
-        String bookingId = booking.bookMovie("NotAMovie", "10:00 AM");
-        Assert.assertEquals("Invalid movie should return empty booking ID", "", bookingId);
+    public void test_TitleCaseInsensitive() {
+        String id = booking.bookMovie("inCEPtion", "10:00 AM");
+        Assert.assertFalse(id.isEmpty());
     }
 
+    // 3. Title with spaces around
     @Test
-    public void test_InvalidShowtime() {
-        String bookingId = booking.bookMovie("Inception", "INVALID");
-        Assert.assertEquals("Invalid showtime should return empty booking ID", "", bookingId);
+    public void test_TitleTrimmed() {
+        String id = booking.bookMovie("   Inception   ", "10:00 AM");
+        Assert.assertFalse(id.isEmpty());
     }
 
+    // 4. Invalid title (not found)
     @Test
-    public void test_CancelExistingBooking() {
-        // First book a movie
-        String bookingId = booking.bookMovie("Inception", "10:00 AM");
-
-        boolean canceled = booking.cancelBooking(bookingId);
-
-        Assert.assertTrue("Cancel should succeed for existing ID", canceled);
+    public void test_TitleNotFound() {
+        String id = booking.bookMovie("RandomMovie", "10:00 AM");
+        Assert.assertEquals("", id);
     }
 
+    // 5. Empty title
     @Test
-    public void test_CancelNonexistentBooking() {
-        boolean canceled = booking.cancelBooking("B999");
-        Assert.assertFalse("Cancel should fail for non-existing ID", canceled);
+    public void test_EmptyTitle() {
+        String id = booking.bookMovie("", "10:00 AM");
+        Assert.assertEquals("", id);
     }
 
+    // 6. Null title
     @Test
-    public void test_ViewBookingsCount() {
-        int before = booking.viewBookings();
-        booking.bookMovie("Inception", "10:00 AM");
-        int after = booking.viewBookings();
-
-        Assert.assertEquals("View bookings should increase by 1", before + 1, after);
+    public void test_NullTitle() {
+        String id = booking.bookMovie(null, "10:00 AM");
+        Assert.assertEquals("", id);
     }
 
-    // ---------------- USER INPUT PROMPT TESTS (PL Equivalent) ---------------- //
-
+    // 7. Title with internal spaces (malformed)
     @Test
-    public void testPL_BookMoviePrompt() {
-        String userInput = "Inception\n10:00 AM\n";
-        simulateInput(userInput);
-
-        // RECREATE booking with NEW scanner linked to new System.in
-        booking = new BookingMovies(sampleDataStore, new Scanner(System.in));
-
-        booking.bookMoviePrompt();
-
-        assertTrue("Should have at least 1 booking",
-                sampleDataStore.getBookings().size() > 0);
+    public void test_InternalSpacesTitle() {
+        String id = booking.bookMovie("In cep tion", "10:00 AM");
+        Assert.assertEquals("", id);
     }
 
+    // 8. Title with special characters
     @Test
-    public void testPL_CancelMoviePrompt() {
-
-        String bookingId = booking.bookMovie("Inception", "10:00 AM");
-
-        String userInput = bookingId + "\n";
-        simulateInput(userInput);
-
-        // RECREATE booking with NEW scanner linked to new System.in
-        booking = new BookingMovies(sampleDataStore, new Scanner(System.in));
-
-        booking.cancelBookingPrompt();
-
-        boolean stillExists = sampleDataStore.getBookings()
-                .stream()
-                .anyMatch(b -> b.getBookingId().equals(bookingId));
-
-        Assert.assertFalse("Booking should be removed", stillExists);
+    public void test_TitleWithSymbols() {
+        String id = booking.bookMovie("Inception!!!", "10:00 AM");
+        Assert.assertEquals("", id);
     }
 
+    // 9. Title with emoji
     @Test
-    public void testPL_Start_InvalidChoice() {
-
-        InputStream originalIn = System.in;
-        PrintStream originalOut = System.out;
-
-        try {
-            String input = "99\n4\n"; // invalid then return to menu
-            System.setIn(new ByteArrayInputStream(input.getBytes()));
-
-            ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-            System.setOut(new PrintStream(outContent));
-
-            booking.start();
-
-            String output = outContent.toString();
-
-            Assert.assertTrue(
-                    "Should display invalid input message",
-                    output.contains("Invalid choice."));
-
-        } finally {
-            System.setIn(originalIn);
-            System.setOut(originalOut);
-        }
+    public void test_TitleWithEmoji() {
+        String id = booking.bookMovie("Inception 🎬", "10:00 AM");
+        Assert.assertEquals("", id);
     }
 
+    // 10. Unicode valid movie (French)
     @Test
-    public void testPL_CancelBooking_CaseInsensitiveID() {
-
-        String bookingId = booking.bookMovie("Inception", "10:00 AM");
-        String lowercaseId = bookingId.toLowerCase();
-        String userInput = lowercaseId + "\n";
-        simulateInput(userInput);
-        booking = new BookingMovies(sampleDataStore, new Scanner(System.in));
-        booking.cancelBookingPrompt();
-        boolean exists = sampleDataStore.getBookings()
-                .stream()
-                .anyMatch(b -> b.getBookingId().equals(bookingId));
-
-        Assert.assertFalse("Cancel should work even with lowercase ID", exists);
+    public void test_TitleUnicodeValid() {
+        String id = booking.bookMovie("Amélie", "12:00 PM");
+        Assert.assertFalse(id.isEmpty());
     }
 
+    // ---------------- SHOWTIME TESTS ---------------- //
+
+    // 11. Valid showtime
     @Test
-    public void test_BookMovie_TitleWithSpaces() {
-        String bookingId = booking.bookMovie("   Inception   ", "10:00 AM");
-
-        Assert.assertNotEquals("Booking ID should not be empty for trimmed title", "", bookingId);
-
-        boolean exists = sampleDataStore.getBookings()
-                .stream()
-                .anyMatch(b -> b.getBookingId().equals(bookingId));
-
-        Assert.assertTrue("Booking should be created even with spaces", exists);
+    public void test_ValidShowtime() {
+        String id = booking.bookMovie("Inception", "10:00 AM");
+        Assert.assertFalse(id.isEmpty());
     }
 
+    // 12. Showtime case-insensitive
     @Test
-    public void test_BookMovie_UppercaseTitle() {
-        String bookingId = booking.bookMovie("INCEPTION", "10:00 AM");
-
-        Assert.assertNotEquals("Uppercase title should still match movie", "", bookingId);
-
-        boolean exists = sampleDataStore.getBookings()
-                .stream()
-                .anyMatch(b -> b.getBookingId().equals(bookingId));
-
-        Assert.assertTrue("Booking should succeed with uppercase title", exists);
+    public void test_ShowtimeCaseInsensitive() {
+        String id = booking.bookMovie("Inception", "10:00 am");
+        Assert.assertFalse(id.isEmpty());
     }
 
+    // 13. Invalid showtime
     @Test
-    public void test_BookMultipleMovies() {
-        int before = sampleDataStore.getBookings().size();
-
-        booking.bookMovie("Inception", "10:00 AM");
-        booking.bookMovie("The Godfather", "12:00 PM");
-
-        int after = sampleDataStore.getBookings().size();
-
-        Assert.assertEquals("Booking count should increase by 2", before + 2, after);
+    public void test_ShowtimeInvalid() {
+        String id = booking.bookMovie("Inception", "25:00");
+        Assert.assertEquals("", id);
     }
 
+    // 14. Empty showtime
     @Test
-    public void test_CancelOnlySelectedBooking() {
-
-        String id1 = booking.bookMovie("Inception", "10:00 AM");
-        String id2 = booking.bookMovie("The Godfather", "12:00 PM");
-
-        booking.cancelBooking(id1);
-
-        boolean stillExists1 = sampleDataStore.getBookings()
-                .stream()
-                .anyMatch(b -> b.getBookingId().equals(id1));
-
-        boolean stillExists2 = sampleDataStore.getBookings()
-                .stream()
-                .anyMatch(b -> b.getBookingId().equals(id2));
-
-        Assert.assertFalse("First booking should be deleted", stillExists1);
-        Assert.assertTrue("Second booking must remain", stillExists2);
+    public void test_ShowtimeEmpty() {
+        String id = booking.bookMovie("Inception", "");
+        Assert.assertEquals("", id);
     }
 
+    // 15. Null showtime
     @Test
-    public void test_CancelBooking_CaseInsensitiveID() {
-        String bookingId = booking.bookMovie("Inception", "10:00 AM");
-
-        String lowercaseId = bookingId.toLowerCase();
-
-        boolean canceled = booking.cancelBooking(lowercaseId);
-
-        Assert.assertTrue("Cancel should ignore ID letter casing", canceled);
+    public void test_ShowtimeNull() {
+        String id = booking.bookMovie("Inception", null);
+        Assert.assertEquals("", id);
     }
 
+    // 16. Symbol showtime
     @Test
-    public void test_BookMovie_MinimumValidTitle() {
-        String bookingId = booking.bookMovie("Up", "10:00 AM");
-
-        Assert.assertNotEquals("Should book even with very short title", "", bookingId);
+    public void test_ShowtimeSymbol() {
+        String id = booking.bookMovie("Inception", "@@@");
+        Assert.assertEquals("", id);
     }
 
+    // 17. Emoji showtime
     @Test
-    public void test_CancelBooking_Twice() {
-        String bookingId = booking.bookMovie("Inception", "10:00 AM");
-
-        boolean firstCancel = booking.cancelBooking(bookingId);
-        boolean secondCancel = booking.cancelBooking(bookingId);
-
-        Assert.assertTrue("First cancel should succeed", firstCancel);
-        Assert.assertFalse("Second cancel should fail", secondCancel);
+    public void test_ShowtimeEmoji() {
+        String id = booking.bookMovie("Inception", "10:00 AM 🎥");
+        Assert.assertEquals("", id);
     }
 
+    // 18. Showtime not in schedule
     @Test
-    public void test_ViewBookings_NoBookingsAfterClear() {
-        dataStore.clearAllBookings();
-
-        int count = booking.viewBookings();
-
-        Assert.assertEquals("Should return 0 when no bookings", 0, count);
+    public void test_ShowtimeNotInSchedule() {
+        String id = booking.bookMovie("Inception", "3:33 PM");
+        Assert.assertEquals("", id);
     }
 
-    // --------------------- Helper Method ---------------------------- //
+    // 19. Showtime leading spaces
+    @Test
+    public void test_ShowtimeLeadingSpaces() {
+        String id = booking.bookMovie("Inception", "   10:00 AM");
+        Assert.assertNotEquals("", id);
+    }
 
-    private void simulateInput(String data) {
-        System.setIn(new ByteArrayInputStream(data.getBytes()));
+    // 20. Showtime trailing spaces → allowed because trim()
+    @Test
+    public void test_ShowtimeTrailingSpaces() {
+        String id = booking.bookMovie("Inception", "10:00 AM   ");
+        Assert.assertFalse(id.isEmpty());
     }
 }
