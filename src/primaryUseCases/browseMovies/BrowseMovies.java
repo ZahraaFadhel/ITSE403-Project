@@ -138,7 +138,7 @@ public class BrowseMovies {
         } catch (NumberFormatException e) {
             System.out.println(
                     consoleColors.RED_BOLD + "Invalid rating input. Please enter valid numbers." + consoleColors.RESET);
-            return new java.util.ArrayList<>();
+            throw new IllegalArgumentException("Invalid rating range");
         }
 
     }
