@@ -1,0 +1,77 @@
+digraph CFG {
+    node [fontsize=12];
+
+    Entry [shape=oval, label="Entry"];
+
+    S1 [shape=box, label="title = title.toLowerCase().trim();"];
+    S2 [shape=box, label="title = title.replaceAll(\"\\\\s+\", \" \");"];
+
+    S3 [shape=box, label="List<Movie> results = new ArrayList<>();"];
+
+    // if (title.isEmpty())
+    C1 [shape=diamond, label="title.isEmpty()"];
+    P1 [shape=box, label="System.out.println(\nRED + \"Search title cannot be empty.\" + RESET\n);"];
+
+    // if (getMovies().isEmpty())
+    C2 [shape=diamond, label="getMovies().isEmpty()"];
+    P2 [shape=box, label="System.out.println(\nRED + \"No movies available.\" + RESET\n);"];
+
+    // for-each loop
+    LoopCond [shape=diamond, label="for (Movie movie : getMovies())"];
+
+    // if (movie.getTitle().toLowerCase().contains(title))
+    C3 [shape=diamond, label="movie.getTitle().toLowerCase().contains(title)"];
+    P3 [shape=box, label="System.out.println(movie);"];
+    S4 [shape=box, label="results.add(movie);"];
+
+    // if (results.isEmpty())
+    C4 [shape=diamond, label="results.isEmpty()"];
+    P4 [shape=box, label="System.out.println(\nRED + \"No movies found with the title: \" + title + RESET\n);"];
+
+    // Merge point for all returns
+    M_return [shape=circle, label=""];
+
+    R [shape=box, label="return results;"];
+    Exit [shape=oval, label="Exit"];
+
+    // Edges
+    Entry -> S1;
+    S1 -> S2;
+    S2 -> S3;
+    S3 -> C1;
+
+    // title empty path
+    C1 -> P1 [label="true"];
+    P1 -> M_return;
+
+    // title not empty
+    C1 -> C2 [label="false"];
+
+    // movies empty path
+    C2 -> P2 [label="true"];
+    P2 -> M_return;
+
+    // movies not empty → loop
+    C2 -> LoopCond [label="false"];
+
+    // loop flow
+    LoopCond -> C3 [label="true (has movie)"];
+    LoopCond -> C4 [label="false (no more movies)"];
+
+    // match found
+    C3 -> P3 [label="true"];
+    P3 -> S4;
+    S4 -> LoopCond;
+
+    // match not found
+
+    // after loop: check emptiness of results
+    C4 -> P4 [label="true"];
+    P4 -> M_return;
+
+    C4 -> M_return [label="false"];
+
+    // unified return
+    M_return -> R;
+    R -> Exit;
+}

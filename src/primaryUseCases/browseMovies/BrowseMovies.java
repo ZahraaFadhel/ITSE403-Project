@@ -41,10 +41,6 @@ public class BrowseMovies {
         }
 
         int counter = 0;
-        if (movies.isEmpty()) {
-            System.out.println(consoleColors.RED_BOLD + "No movies available." + consoleColors.RESET);
-            return 0;
-        }
 
         for (Movie movie : getMovies()) {
             System.out.println(movie);
@@ -57,12 +53,13 @@ public class BrowseMovies {
     public List<Movie> searchMoviesByTitle(String title) {
         title = title.toLowerCase().trim();
         title = title.replaceAll("\\s+", " "); // convert multiple spaces to single space
-        if (title.isEmpty()) {
-            System.out.println(consoleColors.RED_BOLD + "Search title cannot be empty." + consoleColors.RESET);
-            return new java.util.ArrayList<>();
-        }
 
         List<Movie> results = new java.util.ArrayList<>();
+        if (title.isEmpty()) {
+            System.out.println(consoleColors.RED_BOLD + "Search title cannot be empty." + consoleColors.RESET);
+            return results;
+        }
+
         if (getMovies().isEmpty()) {
             System.out.println(consoleColors.RED_BOLD + "No movies available." + consoleColors.RESET);
             return results;
