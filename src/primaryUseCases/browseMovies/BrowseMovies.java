@@ -110,7 +110,7 @@ public class BrowseMovies {
     }
 
     public List<Movie> searchMoviesByRating(double minRating, double maxRating) {
-        if (minRating < 0 || maxRating > 10 || minRating > maxRating) {
+        if (minRating < 0 || maxRating > 10 || minRating > maxRating || Double.isNaN(minRating) || Double.isNaN(maxRating)) {
             System.out.println(consoleColors.RED_BOLD + "Invalid rating range. Please enter ratings between 0 and 10."
                     + consoleColors.RESET);
             throw new IllegalArgumentException("Invalid rating range");

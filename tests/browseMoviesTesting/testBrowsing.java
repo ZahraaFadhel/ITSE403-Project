@@ -205,6 +205,20 @@ public class testBrowsing {
                         results.size() == browseMovies.getMovies().size());
     }
 
+    @Test
+    public void test_SearchMoviesByEmptyMinRating() {
+        Assert.assertThrows(IllegalArgumentException.class, () -> {
+            browseMovies.searchMoviesByRating(Double.NaN, 5.0);
+        });
+    }
+
+    @Test
+    public void test_SearchMoviesByEmptyMaxRating() {
+        Assert.assertThrows(IllegalArgumentException.class, () -> {
+            browseMovies.searchMoviesByRating(5.0, Double.NaN);
+        });
+    }
+
     // Presentation Layer Tests
     @Test
     public void testPL_InvalidMenuChoiceOutOfRange() {
