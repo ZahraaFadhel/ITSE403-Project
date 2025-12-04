@@ -111,29 +111,36 @@ public class BrowseMovies {
     }
 
     public List<Movie> searchMoviesByRating(String minInput, String maxInput) {
-        double minRating = Double.parseDouble(minInput);
-        double maxRating = Double.parseDouble(maxInput);
+        try {
+            double minRating = Double.parseDouble(minInput);
+            double maxRating = Double.parseDouble(maxInput);
 
-        if (minRating < 0 || maxRating > 10 || minRating > maxRating || Double.isNaN(minRating)
-                || Double.isNaN(maxRating)) {
-            System.out.println(consoleColors.RED_BOLD + "Invalid rating range. Please enter ratings between 0 and 10."
-                    + consoleColors.RESET);
-            throw new IllegalArgumentException("Invalid rating range");
-        }
-        List<Movie> results = new java.util.ArrayList<>();
-        if (getMovies().isEmpty()) {
-            System.out.println(consoleColors.RED_BOLD + "No movies available." + consoleColors.RESET);
-            return results;
-        }
-
-        for (Movie movie : getMovies()) {
-            if (movie.getImdbRating() >= minRating && movie.getImdbRating() <= maxRating) {
-                System.out.println(movie);
-                results.add(movie);
+            if (minRating < 0 || maxRating > 10 || minRating > maxRating) {
+                System.out
+                        .println(consoleColors.RED_BOLD + "Invalid rating range. Please enter ratings between 0 and 10."
+                                + consoleColors.RESET);
+                throw new IllegalArgumentException("Invalid rating range");
             }
+            List<Movie> results = new java.util.ArrayList<>();
+            if (getMovies().isEmpty()) {
+                System.out.println(consoleColors.RED_BOLD + "No movies available." + consoleColors.RESET);
+                return results;
+            }
+
+            for (Movie movie : getMovies()) {
+                if (movie.getImdbRating() >= minRating && movie.getImdbRating() <= maxRating) {
+                    System.out.println(movie);
+                    results.add(movie);
+                }
+            }
+            System.out.println();
+            return results;
+        } catch (NumberFormatException e) {
+            System.out.println(
+                    consoleColors.RED_BOLD + "Invalid rating input. Please enter valid numbers." + consoleColors.RESET);
+            return new java.util.ArrayList<>();
         }
-        System.out.println();
-        return results;
+
     }
 
     public int displayMovies() {
@@ -161,7 +168,7 @@ public class BrowseMovies {
             System.out.print("Enter the maximum IMDb rating: ");
             String maxInput = scanner.nextLine().trim();
 
-            searchMoviesByRating(maxInput, maxInput);
+            searchMoviesByRating(minInput, maxInput);
 
         } catch (NumberFormatException | InputMismatchException e) {
             System.out.println(consoleColors.RED_BOLD +
