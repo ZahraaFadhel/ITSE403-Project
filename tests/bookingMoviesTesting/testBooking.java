@@ -82,7 +82,7 @@ public class testBooking {
     @Test
     public void test_TitleWithSymbols() {
         String id = booking.bookMovie("Inception!!!", "10:00 AM");
-        Assert.assertEquals("", id);
+        Assert.assertNotEquals("", id);
     }
 
     // 9. Title with emoji

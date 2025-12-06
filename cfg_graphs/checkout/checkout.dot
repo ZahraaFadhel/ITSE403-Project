@@ -1,0 +1,333 @@
+digraph CheckoutCFG {
+    node [fontsize=12];
+    rankdir=TB;
+
+    Entry [shape=oval, label="Entry"];
+
+    // Start method
+    S1 [shape=box, label="System.out.println(\nBLUE_BOLD + \"--- Checkout ---\" + RESET\n);"];
+    C1 [shape=diamond, label="dataStore.getBookings().isEmpty()"];
+    P1 [shape=box, label="System.out.println(\nRED_BOLD + \"Sorry Shopping cart is empty...\" + RESET\n);\nreturn;"];
+
+    S2 [shape=box, label="printShoppingCart();"];
+    S3 [shape=box, label="price = calculateTotalPrice();"];
+    
+    // Discount code processing
+    S4 [shape=box, label="discountCode = promptForDiscountCode();"];
+    C2 [shape=diamond, label="!discountCode.isEmpty()"];
+    S5 [shape=box, label="price = applyDiscount(discountCode, price);"];
+    S6 [shape=box, label="System.out.println(\nGREEN_BOLD + \"Discount code applied successfully :)\" + RESET\n);"];
+    S7 [shape=box, label="System.out.println(\nDARK_GREEN_BOLD + \"Discounted Total Price = \" + RESET + price\n);"];
+    
+    S8 [shape=box, label="System.out.println();"];
+    S9 [shape=box, label="displayCheckoutMenu();"];
+    
+    // Main loop
+    LoopStart [shape=diamond, label="while (true)"];
+    S10 [shape=box, label="choice = validation.getValidIntegerInput(\n\"Enter your choice: \", scanner\n);"];
+    S11 [shape=box, label="System.out.println();"];
+    C3 [shape=diamond, label="scanner.hasNextLine()"];
+    S12 [shape=box, label="scanner.nextLine();"];
+    C4 [shape=diamond, label="choice > 3 || choice < 1"];
+    P2 [shape=box, label="System.out.println(\nRED_BOLD + \"Invalid input. Please enter a valid number.\" + RESET\n);"];
+    
+    C5 [shape=diamond, label="choice"];
+    
+    // Case 1: Process Payment
+    P3 [shape=box, label="processPayment();\nreturn;"];
+    
+    // Case 2: Return to Menu
+    P4 [shape=box, label="System.out.println(\nYELLOW_BOLD + \"Processing...\" + RESET\n);"];
+    P5 [shape=box, label="returnToMainMenu();\nreturn;"];
+    
+    // Case 3: Exit
+    P6 [shape=box, label="System.out.println(\nYELLOW_BOLD + \"Exiting the system. Goodbye!\" + RESET\n);\nSystem.exit(0);"];
+    
+    // ==================== DISCOUNT CODE SUBFLOW ====================
+    D_Loop [shape=diamond, label="while (true)"];
+    D1 [shape=box, label="System.out.print(\nYELLOW_BOLD + \"Enter discount code...\" + RESET\n);"];
+    C6 [shape=diamond, label="scanner.hasNextLine()"];
+    D2 [shape=box, label="discountCode = scanner.nextLine().trim();"];
+    C7 [shape=diamond, label="!discountCode.isEmpty()"];
+    D3 [shape=box, label="return \"\";"];
+    
+    D4 [shape=box, label="words = discountCode.split(\"\\\\s+\");\nwordCount = words.length;"];
+    C8 [shape=diamond, label="wordCount != 1"];
+    D5 [shape=box, label="System.out.println(\nRED_BOLD + \"Error: Should be single word...\" + RESET\n);"];
+    
+    C9 [shape=diamond, label="!validation.isValidString(discountCode)"];
+    D6 [shape=box, label="System.out.println(\nRED_BOLD + \"Error: Invalid characters...\" + RESET\n);"];
+    
+    C10 [shape=diamond, label="!isValidDiscountCode(discountCode)"];
+    D7 [shape=box, label="System.out.println(\nRED_BOLD + \"Error: Code does not exist...\" + RESET\n);"];
+    
+    D8 [shape=box, label="return discountCode;"];
+    
+    // ==================== PAYMENT PROCESSING SUBFLOW ====================
+    P_Loop [shape=diamond, label="while (true)"];
+    P7 [shape=box, label="System.out.println(\nGREEN_BOLD + \"1. Use saved payment...\" + RESET\n);\nSystem.out.println(\nGREEN_BOLD + \"2. Use new payment...\" + RESET\n);"];
+    P8 [shape=box, label="System.out.print(\nYELLOW_BOLD + \"Enter your choice: \" + RESET\n);"];
+    C11 [shape=diamond, label="scanner.hasNextLine()"];
+    P9 [shape=box, label="input = scanner.nextLine().trim();"];
+    
+    // Try-catch for parseInt
+    C12 [shape=diamond, label="try"];
+    P10 [shape=box, label="choice = Integer.parseInt(input);"];
+    C13 [shape=diamond, label="choice < 1 || choice > 2"];
+    P11 [shape=box, label="System.out.println(\nRED_BOLD + \"Invalid input...\" + RESET\n);"];
+    
+    C14 [shape=diamond, label="choice"];
+    P12 [shape=box, label="System.out.println();"];
+    
+    // Case 1: Saved Payment
+    P13 [shape=box, label="handleSavedPaymentMethod()"];
+    
+    // Case 2: New Payment
+    P14 [shape=box, label="handleNewPaymentMethod()"];
+    
+    P15 [shape=box, label="System.out.println(\nRED_BOLD + \"Error: Wrong input...\" + RESET\n);"];
+    
+    // Catch block
+    P16 [shape=box, label="System.out.println(\nRED_BOLD + \"Invalid input...\" + RESET\n);"];
+    
+    // No input
+    P17 [shape=box, label="return false;"];
+    
+    // ==================== SAVED PAYMENT SUBFLOW ====================
+    SP1 [shape=box, label="savedPaymentMethod = dataStore.getSavedPaymentMethod();"];
+    C15 [shape=diamond, label="savedPaymentMethod != null"];
+    SP2 [shape=box, label="System.out.println(savedPaymentMethod);"];
+    SP3 [shape=box, label="promptForCheckoutConfirmation();"];
+    SP4 [shape=box, label="dataStore.clearAllBookings();"];
+    SP5 [shape=box, label="return true;"];
+    
+    SP6 [shape=box, label="System.out.println(\nRED_BOLD + \"No saved payment method...\" + RESET\n);"];
+    SP7 [shape=box, label="return false;"];
+    
+    // ==================== NEW PAYMENT SUBFLOW ====================
+    NP1 [shape=box, label="cardType = promptForCardType();"];
+    NP2 [shape=box, label="cardholderName = promptForCardholderName();"];
+    NP3 [shape=box, label="cardNumber = promptForCardNumber();"];
+    NP4 [shape=box, label="expiryDate = promptForExpiryDate();"];
+    NP5 [shape=box, label="cvv = promptForCVV();"];
+    NP6 [shape=box, label="promptForCheckoutConfirmation();"];
+    NP7 [shape=box, label="dataStore.clearAllBookings();"];
+    NP8 [shape=box, label="promptForSavePaymentMethod(\ncardType, cardholderName, cardNumber, expiryDate, cvv\n);"];
+    NP9 [shape=box, label="return true;"];
+    
+    // ==================== PAYMENT VALIDATION SUBFLOWS ====================
+    // Card Type Prompt
+    CT_Loop [shape=diamond, label="while (true)"];
+    CT1 [shape=box, label="System.out.print(\nGREEN_BOLD + \"Enter Card Type...\" + RESET\n);"];
+    C16 [shape=diamond, label="scanner.hasNextLine()"];
+    CT2 [shape=box, label="cardType = scanner.nextLine().trim();"];
+    C17 [shape=diamond, label="isValidCardType(cardType)"];
+    CT3 [shape=box, label="return cardType;"];
+    CT4 [shape=box, label="System.out.println(\nRED_BOLD + \"Invalid card type...\" + RESET\n);"];
+    CT5 [shape=box, label="return \"\";"];
+    
+    // Cardholder Name Prompt
+    CN_Loop [shape=diamond, label="while (true)"];
+    CN1 [shape=box, label="System.out.print(\nGREEN_BOLD + \"Enter Cardholder Name:\" + RESET\n);"];
+    C18 [shape=diamond, label="scanner.hasNextLine()"];
+    CN2 [shape=box, label="name = scanner.nextLine().trim();"];
+    C19 [shape=diamond, label="isValidCardholderName(name)"];
+    CN3 [shape=box, label="return name;"];
+    CN4 [shape=box, label="System.out.println(\nRED_BOLD + \"Invalid name...\" + RESET\n);"];
+    CN5 [shape=box, label="return \"\";"];
+    
+    // ==================== RETURN TO MENU SUBFLOW ====================
+    R1 [shape=box, label="System.out.println(\nYELLOW_BOLD + \"Go Back? (y/n)\" + RESET\n);"];
+    R2 [shape=box, label="System.out.print(\nYELLOW_BOLD + \"Enter your choice: \" + RESET\n);"];
+    R3 [shape=box, label="choice = scanner.nextLine().trim().toLowerCase();"];
+    
+    R_Loop [shape=diamond, label="!(choice.equals(\"y\") || choice.equals(\"n\"))"];
+    C20 [shape=diamond, label="choice.length() != 1 || !choice.matches(\"[yn]\")"];
+    R4 [shape=box, label="System.out.println(\nRED_BOLD + \"Invalid choice...\" + RESET\n);"];
+    R5 [shape=box, label="System.out.println(\nYELLOW_BOLD + \"Enter your choice: \" + RESET\n);"];
+    R6 [shape=box, label="choice = scanner.nextLine().trim().toLowerCase();"];
+    
+    C21 [shape=diamond, label="choice"];
+    R7 [shape=box, label="System.out.println(\nYELLOW_BOLD + \"Returning to browsing menu >>>\" + RESET\n);\nbreak;"];
+    R8 [shape=box, label="System.out.println(\nRED_BOLD + \"Exiting the system. Goodbye!\" + RESET\n);\nSystem.exit(0);"];
+    R9 [shape=box, label="System.out.println(\nRED_BOLD + \"Invalid choice...\" + RESET\n);\nbreak;"];
+    
+    Exit [shape=oval, label="Exit"];
+
+    // ==================== MAIN FLOW CONNECTIONS ====================
+    Entry -> S1;
+    S1 -> C1;
+    C1 -> P1 [label="true"];
+    P1 -> Exit;
+    C1 -> S2 [label="false"];
+    S2 -> S3;
+    S3 -> S4;
+    
+    // Discount code flow connection
+    S4 -> C2;
+    C2 -> S5 [label="true"];
+    S5 -> S6;
+    S6 -> S7;
+    S7 -> S8;
+    C2 -> S8 [label="false"];
+    
+    S8 -> S9;
+    S9 -> LoopStart;
+    
+    // Main menu loop
+    LoopStart -> S10;
+    S10 -> S11;
+    S11 -> C3;
+    C3 -> S12 [label="true"];
+    S12 -> C4;
+    C3 -> C4 [label="false"];
+    C4 -> P2 [label="true"];
+    P2 -> LoopStart;
+    C4 -> C5 [label="false"];
+    
+    // Switch cases
+    C5 -> P3 [label="1"];
+    C5 -> P4 [label="2"];
+    C5 -> P6 [label="3"];
+    
+    P3 -> Exit;
+    P4 -> P5;
+    P5 -> Exit;
+    P6 -> Exit;
+    
+    // ==================== DISCOUNT CODE SUBFLOW CONNECTIONS ====================
+    // From S4 to discount flow
+    {rank=same; S4 D_Loop}
+    S4 -> D_Loop [style=dashed, color=blue];
+    
+    D_Loop -> D1;
+    D1 -> C6;
+    C6 -> D2 [label="true"];
+    C6 -> D3 [label="false"];
+    D3 -> D8 [style=invis];
+    
+    D2 -> C7;
+    C7 -> D3 [label="false"];
+    C7 -> D4 [label="true"];
+    
+    D4 -> C8;
+    C8 -> D5 [label="true"];
+    D5 -> D_Loop;
+    C8 -> C9 [label="false"];
+    
+    C9 -> D6 [label="true"];
+    D6 -> D_Loop;
+    C9 -> C10 [label="false"];
+    
+    C10 -> D7 [label="true"];
+    D7 -> D_Loop;
+    C10 -> D8 [label="false"];
+    
+    // ==================== PAYMENT PROCESSING CONNECTIONS ====================
+    // From P3 to payment flow
+    {rank=same; P3 P_Loop}
+    P3 -> P_Loop [style=dashed, color=blue];
+    
+    P_Loop -> P7;
+    P7 -> P8;
+    P8 -> C11;
+    C11 -> P9 [label="true"];
+    C11 -> P17 [label="false"];
+    P17 -> SP7 [style=invis];
+    
+    P9 -> C12;
+    C12 -> P10 [label="try"];
+    P10 -> C13;
+    C13 -> P11 [label="true"];
+    P11 -> P_Loop;
+    C13 -> C14 [label="false"];
+    
+    C12 -> P16 [label="catch"];
+    P16 -> P_Loop;
+    
+    C14 -> P12 [label="1"];
+    C14 -> P12 [label="2"];
+    C14 -> P15 [label="other"];
+    P15 -> P_Loop;
+    
+    P12 -> P13 [label="1"];
+    P12 -> P14 [label="2"];
+    
+    // Saved payment connections
+    P13 -> SP1;
+    SP1 -> C15;
+    C15 -> SP2 [label="true"];
+    SP2 -> SP3;
+    SP3 -> SP4;
+    SP4 -> SP5;
+    SP5 -> Exit;
+    
+    C15 -> SP6 [label="false"];
+    SP6 -> SP7;
+    SP7 -> Exit;
+    
+    // New payment connections
+    P14 -> NP1;
+    NP1 -> NP2;
+    NP2 -> NP3;
+    NP3 -> NP4;
+    NP4 -> NP5;
+    NP5 -> NP6;
+    NP6 -> NP7;
+    NP7 -> NP8;
+    NP8 -> NP9;
+    NP9 -> Exit;
+    
+    // ==================== PAYMENT VALIDATION CONNECTIONS ====================
+    // Card Type flow
+    NP1 -> CT_Loop [style=dashed, color=green];
+    CT_Loop -> CT1;
+    CT1 -> C16;
+    C16 -> CT2 [label="true"];
+    C16 -> CT5 [label="false"];
+    CT5 -> CT3 [style=invis];
+    
+    CT2 -> C17;
+    C17 -> CT3 [label="true"];
+    CT3 -> NP2 [style=invis];
+    C17 -> CT4 [label="false"];
+    CT4 -> CT_Loop;
+    
+    // Cardholder Name flow
+    NP2 -> CN_Loop [style=dashed, color=green];
+    CN_Loop -> CN1;
+    CN1 -> C18;
+    C18 -> CN2 [label="true"];
+    C18 -> CN5 [label="false"];
+    CN5 -> CN3 [style=invis];
+    
+    CN2 -> C19;
+    C19 -> CN3 [label="true"];
+    CN3 -> NP3 [style=invis];
+    C19 -> CN4 [label="false"];
+    CN4 -> CN_Loop;
+    
+    // ==================== RETURN TO MENU CONNECTIONS ====================
+    // From P5 to return menu flow
+    P5 -> R1 [style=dashed, color=orange];
+    R1 -> R2;
+    R2 -> R3;
+    R3 -> R_Loop;
+    
+    R_Loop -> C20 [label="true"];
+    C20 -> R4 [label="true"];
+    R4 -> R5;
+    R5 -> R6;
+    R6 -> R_Loop;
+    
+    R_Loop -> C21 [label="false"];
+    C20 -> C21 [label="false"];
+    
+    C21 -> R7 [label="y"];
+    C21 -> R8 [label="n"];
+    C21 -> R9 [label="other"];
+    
+    R7 -> Exit;
+    R8 -> Exit;
+    R9 -> Exit;
+}

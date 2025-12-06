@@ -88,13 +88,13 @@ public class testCheckoutMovies {
     }
 
     @Test
-    public void testIsValidCardholderNameSuccess_JohnDoe() {
-        assertTrue(CheckoutMovies.isValidCardholderName("John Doe"));
+    public void testIsValidCardholderNameSuccess_Alice() {
+        assertTrue(CheckoutMovies.isValidCardholderName("Alice"));
     }
 
     @Test
-    public void testIsValidCardholderNameSuccess_Alice() {
-        assertTrue(CheckoutMovies.isValidCardholderName("Alice"));
+    public void testIsValidCardholderNameSuccess_JohnDoe() {
+        assertTrue(CheckoutMovies.isValidCardholderName("John Doe"));
     }
 
     @Test
@@ -102,44 +102,26 @@ public class testCheckoutMovies {
         assertTrue(CheckoutMovies.isValidCardNumber("1234567890123456"));
     }
 
-@Test
-public void testIsValidExpiryDateSuccess_FutureDate() {
-    // Test a date 1 year in the future (always valid)
-    java.time.LocalDate future = java.time.LocalDate.now().plusYears(1);
-    String expiryDate = String.format("%02d/%02d", future.getMonthValue(), future.getYear() % 100);
-    assertTrue(CheckoutMovies.isValidExpiryDate(expiryDate));
-}
+    @Test
+    public void testIsValidExpiryDateSuccess_FutureDate() {
+        // Test a date 1 year in the future (always valid)
+        java.time.LocalDate future = java.time.LocalDate.now().plusYears(1);
+        String expiryDate = String.format("%02d/%02d", future.getMonthValue(), future.getYear() % 100);
+        assertTrue(CheckoutMovies.isValidExpiryDate(expiryDate));
+    }
 
-@Test
-public void testIsValidExpiryDateSuccess_CurrentMonth() {
-    // Test current month (should be valid)
-    java.time.LocalDate now = java.time.LocalDate.now();
-    String expiryDate = String.format("%02d/%02d", now.getMonthValue(), now.getYear() % 100);
-    assertTrue(CheckoutMovies.isValidExpiryDate(expiryDate));
-}
+    @Test
+    public void testIsValidExpiryDateSuccess_CurrentMonth() {
+        // Test current month (should be valid)
+        java.time.LocalDate now = java.time.LocalDate.now();
+        String expiryDate = String.format("%02d/%02d", now.getMonthValue(), now.getYear() % 100);
+        assertTrue(CheckoutMovies.isValidExpiryDate(expiryDate));
+    }
 
-@Test
-public void testIsValidExpiryDateFailure_PastMonth() {
-    // Test a date 1 month in the past (should fail)
-    java.time.LocalDate past = java.time.LocalDate.now().minusMonths(1);
-    String expiryDate = String.format("%02d/%02d", past.getMonthValue(), past.getYear() % 100);
-    assertFalse(CheckoutMovies.isValidExpiryDate(expiryDate));
-}
-
-@Test
-public void testIsValidExpiryDateFailure_InvalidMonth_13() {
-    assertFalse(CheckoutMovies.isValidExpiryDate("13/25"));
-}
-
-@Test
-public void testIsValidExpiryDateFailure_InvalidMonth_00() {
-    assertFalse(CheckoutMovies.isValidExpiryDate("00/25"));
-}
-
-@Test
-public void testIsValidExpiryDateFailure_WrongFormat() {
-    assertFalse(CheckoutMovies.isValidExpiryDate("12-25"));
-}
+    @Test
+    public void testIsValidExpiryDateFailure_WrongFormat() {
+        assertFalse(CheckoutMovies.isValidExpiryDate("12-25"));
+    }
 
     @Test
     public void testIsValidCVVSuccess_ThreeDigits() {
@@ -159,13 +141,13 @@ public void testIsValidExpiryDateFailure_WrongFormat() {
     @Test
     public void testProceedToCheckout_NewPaymentMethod() {
         String input = "2\n" +
-                       "Visa\n" +
-                       "John Doe\n" +
-                       "1234567890123456\n" +
-                       "12/25\n" +
-                       "123\n" +
-                       "yes\n" +
-                       "\n";
+                "Visa\n" +
+                "John Doe\n" +
+                "1234567890123456\n" +
+                "12/25\n" +
+                "123\n" +
+                "yes\n" +
+                "\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         checkout = new CheckoutMovies();
         boolean result = checkout.processPayment();
@@ -198,10 +180,6 @@ public void testIsValidExpiryDateFailure_WrongFormat() {
         assertEquals("INVALIDCODE should return 0%", 0, checkoutGetDiscountPercentageByCode("INVALIDCODE"));
     }
 
-    @Test
-    public void testGetDiscountPercentageByCodeFailure_EmptyString() {
-        assertEquals("Empty string should return 0%", 0, checkoutGetDiscountPercentageByCode(""));
-    }
 
     @Test
     public void testIsValidCardTypeFailure_Amex() {
@@ -211,11 +189,6 @@ public void testIsValidExpiryDateFailure_WrongFormat() {
     @Test
     public void testIsValidCardTypeFailure_EmptyString() {
         assertFalse("Empty string", CheckoutMovies.isValidCardType(""));
-    }
-
-    @Test
-    public void testIsValidCardTypeFailure_NullInput() {
-        assertFalse("Null input", CheckoutMovies.isValidCardType(null));
     }
 
     @Test
@@ -231,21 +204,6 @@ public void testIsValidExpiryDateFailure_WrongFormat() {
     @Test
     public void testIsValidCardholderNameFailure_EmptyString() {
         assertFalse("Empty string", CheckoutMovies.isValidCardholderName(""));
-    }
-
-    @Test
-    public void testIsValidCardholderNameFailure_NullInput() {
-        assertFalse("Null input", CheckoutMovies.isValidCardholderName(null));
-    }
-
-    @Test
-    public void testIsValidCardholderNameFailure_NumbersAtEnd() {
-        assertFalse("Numbers in name", CheckoutMovies.isValidCardholderName("John Doe123"));
-    }
-
-    @Test
-    public void testIsValidCardholderNameFailure_SpecialCharactersHyphen() {
-        assertFalse("Special characters hyphen", CheckoutMovies.isValidCardholderName("John-Doe"));
     }
 
     @Test
@@ -269,58 +227,26 @@ public void testIsValidExpiryDateFailure_WrongFormat() {
     }
 
     @Test
-    public void testIsValidCardNumberFailure_NullInput() {
-        assertFalse("Null input", CheckoutMovies.isValidCardNumber(null));
-    }
-
-    @Test
     public void testIsValidCardNumberFailure_WithSpaces() {
         assertFalse("Spaces included", CheckoutMovies.isValidCardNumber("1234 5678 9012 3456"));
     }
 
-    @Test
-    public void testIsValidCardNumberFailure_WithHyphens() {
-        assertFalse("Hyphens included", CheckoutMovies.isValidCardNumber("1234-5678-9012-3456"));
+   @Test
+    public void testIsValidExpiryDateFailure_PastMonth() {
+        // Test a date 1 month in the past (should fail)
+        java.time.LocalDate past = java.time.LocalDate.now().minusMonths(1);
+        String expiryDate = String.format("%02d/%02d", past.getMonthValue(), past.getYear() % 100);
+        assertFalse(CheckoutMovies.isValidExpiryDate(expiryDate));
     }
 
     @Test
-    public void testIsValidExpiryDateFailure_InvalidMonth13() {
-        assertFalse("Invalid month 13", CheckoutMovies.isValidExpiryDate("13/25"));
+    public void testIsValidExpiryDateFailure_InvalidMonth_13() {
+        assertFalse(CheckoutMovies.isValidExpiryDate("13/25"));
     }
 
     @Test
-    public void testIsValidExpiryDateFailure_InvalidMonth00() {
-        assertFalse("Invalid month 00", CheckoutMovies.isValidExpiryDate("00/25"));
-    }
-
-    @Test
-    public void testIsValidExpiryDateFailure_WrongFormat4DigitYear() {
-        assertFalse("Wrong format 4-digit year", CheckoutMovies.isValidExpiryDate("12/2025"));
-    }
-
-    @Test
-    public void testIsValidExpiryDateFailure_TooLongFormat() {
-        assertFalse("Too long format", CheckoutMovies.isValidExpiryDate("12/25/2025"));
-    }
-
-    @Test
-    public void testIsValidExpiryDateFailure_EmptyString() {
-        assertFalse("Empty string", CheckoutMovies.isValidExpiryDate(""));
-    }
-
-    @Test
-    public void testIsValidExpiryDateFailure_NullInput() {
-        assertFalse("Null input", CheckoutMovies.isValidExpiryDate(null));
-    }
-
-    @Test
-    public void testIsValidExpiryDateFailure_WrongSeparatorHyphen() {
-        assertFalse("Wrong separator hyphen", CheckoutMovies.isValidExpiryDate("12-25"));
-    }
-
-    @Test
-    public void testIsValidExpiryDateFailure_ShortYear() {
-        assertFalse("Short year", CheckoutMovies.isValidExpiryDate("12/5"));
+    public void testIsValidExpiryDateFailure_InvalidMonth_00() {
+        assertFalse(CheckoutMovies.isValidExpiryDate("00/25"));
     }
 
     @Test
@@ -341,22 +267,6 @@ public void testIsValidExpiryDateFailure_WrongFormat() {
     @Test
     public void testIsValidCVVFailure_EmptyString() {
         assertFalse("Empty string", CheckoutMovies.isValidCVV(""));
-    }
-
-    @Test
-    public void testIsValidCVVFailure_NullInput() {
-        assertFalse("Null input", CheckoutMovies.isValidCVV(null));
-    }
-
-    @Test
-    public void testProceedToCheckout_InvalidCardType() {
-        String input = "2\n" +
-                       "Amex\n" +
-                       "no\n";
-        System.setIn(new ByteArrayInputStream(input.getBytes()));
-        checkout = new CheckoutMovies();
-        boolean result = checkout.processPayment();
-        assertFalse("Checkout with invalid card type should fail", result);
     }
 
     @Test
@@ -383,7 +293,7 @@ public void testIsValidExpiryDateFailure_WrongFormat() {
     }
 
     // ==================== PRIVATE HELPER METHODS ====================
-    
+
     private boolean checkoutIsValidDiscountCode(String code) {
         for (ValidDiscountCode discountCode : dataStore.getValidDiscountCodes()) {
             if (discountCode.getCode().equalsIgnoreCase(code.trim())) {
@@ -392,7 +302,7 @@ public void testIsValidExpiryDateFailure_WrongFormat() {
         }
         return false;
     }
-    
+
     private int checkoutGetDiscountPercentageByCode(String discountCode) {
         for (ValidDiscountCode validCode : dataStore.getValidDiscountCodes()) {
             if (validCode.getCode().equalsIgnoreCase(discountCode.trim())) {

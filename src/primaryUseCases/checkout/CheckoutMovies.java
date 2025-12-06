@@ -314,7 +314,7 @@ System.out.println();
                     return expiryDate;
                 }
                 System.out.println(consoleColors.RED_BOLD +
-                        "Invalid expiry date. Format must be MM/YY." +
+                         "Invalid expiry date. Format must be MM/YY and must be a future or current date (not expired)." +
                         consoleColors.RESET);
             } else {
                 return "";
@@ -365,12 +365,42 @@ System.out.println();
         return cardNumber.matches("^\\d{16}$");
     }
 
-    public static boolean isValidExpiryDate(String expiryDate) {
-        if (expiryDate == null) {
-            return false;
-        }
-        return expiryDate.matches("^(0[1-9]|1[0-2])/(\\d{2})$");
+   public static boolean isValidExpiryDate(String expiryDate) {
+    if (expiryDate == null) {
+        return false;
     }
+    
+    // Check format MM/YY
+    if (!expiryDate.matches("^(0[1-9]|1[0-2])/(\\d{2})$")) {
+        return false;
+    }
+    
+    try {
+        String[] parts = expiryDate.split("/");
+        int month = Integer.parseInt(parts[0]);
+        int year = Integer.parseInt(parts[1]);
+        
+        int fullYear = 2000 + year;
+        
+        java.time.LocalDate currentDate = java.time.LocalDate.now();
+        int currentYear = currentDate.getYear();
+        int currentMonth = currentDate.getMonthValue();
+        
+        // Check if date is not in the past
+        if (fullYear < currentYear) {
+            return false; 
+        } else if (fullYear == currentYear) {
+            if (month < currentMonth) {
+                return false;
+            }
+        }
+        
+        return true;
+        
+    } catch (Exception e) {
+        return false;
+    }
+}
 
     public static boolean isValidCVV(String cvv) {
         if (cvv == null) {
