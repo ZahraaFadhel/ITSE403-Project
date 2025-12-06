@@ -1,0 +1,318 @@
+digraph CFG_AddMovie {
+    node [fontsize=11];
+
+    // ================== addMovie ==================
+    Entry [shape=oval, label="Entry"];
+
+    H1 [shape=box, label="print '=== Add New Movie ==='"];
+    A1 [shape=box, label="title = readTitle()"];
+
+    C_exist [shape=diamond, label="movieExists(title)?"];
+    P_exist [shape=box, label="print 'Movie with this title already exists.'"];
+    Exit [shape=oval, label="Exit"];
+
+    A2 [shape=box, label="actors = readActors()"];
+    A3 [shape=box, label="summary = readSummary()"];
+    A4 [shape=box, label="ageRestriction = readPositiveInt('Enter age restriction')"];
+    A5 [shape=box, label="imdbRating = readImdbRating()"];
+    A6 [shape=box, label="language = readLanguage()"];
+    A7 [shape=box, label="duration = readPositiveInt('Enter duration (minutes)')"];
+    A8 [shape=box, label="showTimes = readShowTimes()"];
+    A9 [shape=box, label="hallType = readHallType()"];
+
+    A10 [shape=box, label="movie = new Movie(...)"];
+    A11 [shape=box, label="addMovieToCollection(movie)"];
+    P_success [shape=box, label="print 'Movie <title> added successfully!'"];
+
+    // addMovie edges
+    Entry -> H1;
+    H1 -> A1;
+    A1 -> C_exist;
+
+    C_exist -> P_exist [label="true"];
+    P_exist -> Exit;
+
+    C_exist -> A2 [label="false"];
+    A2 -> A3;
+    A3 -> A4;
+    A4 -> A5;
+    A5 -> A6;
+    A6 -> A7;
+    A7 -> A8;
+    A8 -> A9;
+    A9 -> A10;
+    A10 -> A11;
+    A11 -> P_success;
+    P_success -> Exit;
+
+    // ================== readActors ==================
+    subgraph cluster_readActors {
+        label="readActors()";
+        style=dashed;
+
+        RA_Entry [shape=oval, label="Entry_readActors"];
+        RA_H1 [shape=box, label="print 'Enter 3 main actors:'"];
+        RA_Init [shape=box, label="i = 0"];
+        RA_ForCond [shape=diamond, label="i < ACTOR_COUNT?"];
+
+        // inner while for each actor
+        RA_WhileCond [shape=diamond, label="actor[i] valid? (loop)"];
+
+        RA_Prompt [shape=box, label="print 'Enter actor (i+1):'"];
+        RA_Read [shape=box, label="input = scanner.nextLine();\ntrimmed = input.trim();"];
+
+        RA_Empty [shape=diamond, label="trimmed.isEmpty()?"];
+        RA_PrintEmpty [shape=box, label="print 'Actor name cannot be empty or whitespace.'"];
+
+        RA_InvalidRegex [shape=diamond, label="!trimmed.matches(LETTERS_ONLY_REGEX)?"];
+        RA_PrintInvalid [shape=box, label="print 'Actor name must contain letters and spaces only.'"];
+
+        RA_Assign [shape=box, label="actors[i] = trimmed;"];
+        RA_Inc [shape=box, label="i++"];
+
+        RA_Return [shape=box, label="return actors;"];
+        RA_Exit [shape=oval, label="Exit_readActors"];
+
+        // edges
+        RA_Entry -> RA_H1;
+        RA_H1 -> RA_Init;
+        RA_Init -> RA_ForCond;
+
+        RA_ForCond -> RA_Exit [label="false"]; // done loop
+        RA_ForCond -> RA_WhileCond [label="true"];
+
+        // while(true) for single actor
+        RA_WhileCond -> RA_Prompt [label="loop"];
+        RA_Prompt -> RA_Read;
+
+        RA_Read -> RA_Empty;
+        RA_Empty -> RA_PrintEmpty [label="true"];
+        RA_PrintEmpty -> RA_WhileCond;
+
+        RA_Empty -> RA_InvalidRegex [label="false"];
+        RA_InvalidRegex -> RA_PrintInvalid [label="true"];
+        RA_PrintInvalid -> RA_WhileCond;
+
+        RA_InvalidRegex -> RA_Assign [label="false"];
+        RA_Assign -> RA_Inc;
+        RA_Inc -> RA_ForCond;
+
+        RA_Exit -> RA_Return;
+    }
+
+    // ================== readSummary ==================
+    subgraph cluster_readSummary {
+        label="readSummary()";
+        style=dashed;
+
+        RS_Entry [shape=oval, label="Entry_readSummary"];
+        RS_WhileCond [shape=diamond, label="loop"];
+        RS_Prompt [shape=box, label="print 'Enter summary:'"];
+        RS_Read [shape=box, label="input = scanner.nextLine();\ntrimmed = input.trim();"];
+        RS_Empty [shape=diamond, label="trimmed.isEmpty()?"];
+        RS_PrintEmpty [shape=box, label="print 'Summary cannot be empty or whitespace.'"];
+        RS_Return [shape=box, label="return trimmed;"];
+        RS_Exit [shape=oval, label="Exit_readSummary"];
+
+        RS_Entry -> RS_WhileCond;
+        RS_WhileCond -> RS_Prompt;
+        RS_Prompt -> RS_Read;
+        RS_Read -> RS_Empty;
+        RS_Empty -> RS_PrintEmpty [label="true"];
+        RS_PrintEmpty -> RS_WhileCond;
+        RS_Empty -> RS_Return [label="false"];
+        RS_Return -> RS_Exit;
+    }
+
+    // ================== readLanguage ==================
+    subgraph cluster_readLanguage {
+        label="readLanguage()";
+        style=dashed;
+
+        RL_Entry [shape=oval, label="Entry_readLanguage"];
+        RL_WhileCond [shape=diamond, label="loop"];
+        RL_Prompt [shape=box, label="print 'Enter language:'"];
+        RL_Read [shape=box, label="input = scanner.nextLine();\ntrimmed = input.trim();"];
+
+        RL_Empty [shape=diamond, label="trimmed.isEmpty()?"];
+        RL_PrintEmpty [shape=box, label="print 'Language cannot be empty or whitespace.'"];
+
+        RL_InvalidRegex [shape=diamond, label="!trimmed.matches(LETTERS_ONLY_REGEX)?"];
+        RL_PrintInvalid [shape=box, label="print 'Language must contain letters and spaces only.'"];
+
+        RL_Return [shape=box, label="return trimmed;"];
+        RL_Exit [shape=oval, label="Exit_readLanguage"];
+
+        RL_Entry -> RL_WhileCond;
+        RL_WhileCond -> RL_Prompt;
+        RL_Prompt -> RL_Read;
+
+        RL_Read -> RL_Empty;
+        RL_Empty -> RL_PrintEmpty [label="true"];
+        RL_PrintEmpty -> RL_WhileCond;
+
+        RL_Empty -> RL_InvalidRegex [label="false"];
+        RL_InvalidRegex -> RL_PrintInvalid [label="true"];
+        RL_PrintInvalid -> RL_WhileCond;
+
+        RL_InvalidRegex -> RL_Return [label="false"];
+        RL_Return -> RL_Exit;
+    }
+
+    // ================== readPositiveInt ==================
+    subgraph cluster_readPositiveInt {
+        label="readPositiveInt(prompt)";
+        style=dashed;
+
+        RPI_Entry [shape=oval, label="Entry_readPositiveInt"];
+        RPI_WhileCond [shape=diamond, label="loop"];
+        RPI_Prompt [shape=box, label="print prompt"];
+        RPI_Read [shape=box, label="input = scanner.nextLine();"];
+        RPI_TryParse [shape=box, label="val = Integer.parseInt(input.trim());"];
+
+        RPI_Positive [shape=diamond, label="val > 0?"];
+        RPI_Return [shape=box, label="return val;"];
+
+        RPI_PrintNonPositive [shape=box, label="print 'Enter a positive number only.'"];
+        RPI_Catch [shape=box, label="catch NumberFormatException:\nprint 'Invalid number format.'"];
+
+        RPI_Exit [shape=oval, label="Exit_readPositiveInt"];
+
+        RPI_Entry -> RPI_WhileCond;
+        RPI_WhileCond -> RPI_Prompt;
+        RPI_Prompt -> RPI_Read;
+        RPI_Read -> RPI_TryParse;
+        RPI_TryParse -> RPI_Positive;
+
+        RPI_Positive -> RPI_Return [label="true"];
+        RPI_Return -> RPI_Exit;
+
+        RPI_Positive -> RPI_PrintNonPositive [label="false"];
+        RPI_PrintNonPositive -> RPI_WhileCond;
+
+        // exception path
+        RPI_TryParse -> RPI_Catch [label="NumberFormatException"];
+        RPI_Catch -> RPI_WhileCond;
+    }
+
+    // ================== readImdbRating ==================
+    subgraph cluster_readImdbRating {
+        label="readImdbRating()";
+        style=dashed;
+
+        RR_Entry [shape=oval, label="Entry_readImdbRating"];
+        RR_WhileCond [shape=diamond, label="loop"];
+        RR_Prompt [shape=box, label="print 'Enter IMDb rating (1 to 10):'"];
+        RR_Read [shape=box, label="input = scanner.nextLine();"];
+        RR_TryParse [shape=box, label="rating = Double.parseDouble(input.trim());"];
+
+        RR_Valid [shape=diamond, label="1 <= rating <= 10?"];
+        RR_Return [shape=box, label="return rating;"];
+        RR_PrintRange [shape=box, label="print 'Rating must be between 1 and 10.'"];
+
+        RR_Catch [shape=box, label="catch NumberFormatException:\nprint 'Invalid rating input.'"];
+
+        RR_Exit [shape=oval, label="Exit_readImdbRating"];
+
+        RR_Entry -> RR_WhileCond;
+        RR_WhileCond -> RR_Prompt;
+        RR_Prompt -> RR_Read;
+        RR_Read -> RR_TryParse;
+        RR_TryParse -> RR_Valid;
+
+        RR_Valid -> RR_Return [label="true"];
+        RR_Return -> RR_Exit;
+
+        RR_Valid -> RR_PrintRange [label="false"];
+        RR_PrintRange -> RR_WhileCond;
+
+        RR_TryParse -> RR_Catch [label="NumberFormatException"];
+        RR_Catch -> RR_WhileCond;
+    }
+
+    // ================== readShowTimes ==================
+    subgraph cluster_readShowTimes {
+        label="readShowTimes()";
+        style=dashed;
+
+        RST_Entry [shape=oval, label="Entry_readShowTimes"];
+        RST_PrintIntro [shape=box, label="print 'Enter 5 show times (HH:MM):'"];
+        RST_Init [shape=box, label="i = 0"];
+        RST_ForCond [shape=diamond, label="i < SHOWTIME_COUNT?"];
+
+        RST_WhileCond [shape=diamond, label="loop for time i"];
+
+        RST_Prompt [shape=box, label="print 'Enter show time (i+1):'"];
+        RST_Read [shape=box, label="input = scanner.nextLine();\ntrimmed = input.trim();"];
+
+        RST_Empty [shape=diamond, label="trimmed.isEmpty()?"];
+        RST_PrintEmpty [shape=box, label="print 'Show time cannot be empty or whitespace.'"];
+
+        RST_InvalidRegex [shape=diamond, label="!trimmed.matches(TIME_REGEX)?"];
+        RST_PrintInvalid [shape=box, label="print 'Invalid time format. Must be HH:MM (00:00–23:59).'"];
+
+        RST_Append [shape=box, label="times[i] = appendAmPm(trimmed);"];
+        RST_Inc [shape=box, label="i++"];
+        RST_Return [shape=box, label="return times;"];
+        RST_Exit [shape=oval, label="Exit_readShowTimes"];
+
+        RST_Entry -> RST_PrintIntro;
+        RST_PrintIntro -> RST_Init;
+        RST_Init -> RST_ForCond;
+
+        RST_ForCond -> RST_Exit [label="false"];
+        RST_ForCond -> RST_WhileCond [label="true"];
+
+        RST_WhileCond -> RST_Prompt;
+        RST_Prompt -> RST_Read;
+        RST_Read -> RST_Empty;
+
+        RST_Empty -> RST_PrintEmpty [label="true"];
+        RST_PrintEmpty -> RST_WhileCond;
+
+        RST_Empty -> RST_InvalidRegex [label="false"];
+        RST_InvalidRegex -> RST_PrintInvalid [label="true"];
+        RST_PrintInvalid -> RST_WhileCond;
+
+        RST_InvalidRegex -> RST_Append [label="false"];
+        RST_Append -> RST_Inc;
+        RST_Inc -> RST_ForCond;
+    }
+
+    // ================== readHallType ==================
+    subgraph cluster_readHallType {
+        label="readHallType()";
+        style=dashed;
+
+        RH_Entry [shape=oval, label="Entry_readHallType"];
+        RH_WhileCond [shape=diamond, label="loop"];
+        RH_Prompt [shape=box, label="print 'Choose hall type (VIP / 3D / IMAX / STANDARD):'"];
+        RH_Read [shape=box, label="input = scanner.nextLine();\ntrimmed = input.trim();"];
+
+        RH_Empty [shape=diamond, label="trimmed.isEmpty()?"];
+        RH_PrintEmpty [shape=box, label="print 'Hall type cannot be empty or whitespace.'"];
+
+        RH_Upper [shape=box, label="upper = trimmed.toUpperCase();"];
+        RH_Valid [shape=diamond, label="VALID_HALL_TYPES.contains(upper)?"];
+        RH_PrintInvalid [shape=box, label="print 'Invalid hall type.'"];
+        RH_Return [shape=box, label="return upper;"];
+        RH_Exit [shape=oval, label="Exit_readHallType"];
+
+        RH_Entry -> RH_WhileCond;
+        RH_WhileCond -> RH_Prompt;
+        RH_Prompt -> RH_Read;
+        RH_Read -> RH_Empty;
+
+        RH_Empty -> RH_PrintEmpty [label="true"];
+        RH_PrintEmpty -> RH_WhileCond;
+
+        RH_Empty -> RH_Upper [label="false"];
+        RH_Upper -> RH_Valid;
+
+        RH_Valid -> RH_Return [label="true"];
+        RH_Return -> RH_Exit;
+
+        RH_Valid -> RH_PrintInvalid [label="false"];
+        RH_PrintInvalid -> RH_WhileCond;
+    }
+}

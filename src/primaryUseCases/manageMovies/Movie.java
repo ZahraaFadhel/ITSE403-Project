@@ -8,8 +8,6 @@ It also provides functionality to filter and display movies based on specific cr
 package src.primaryUseCases.manageMovies; 
 
 import java.util.Arrays;
-import java.util.List; 
-import src.dataStore; 
 
 public class Movie { 
 
